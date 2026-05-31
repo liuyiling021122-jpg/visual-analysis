@@ -1,0 +1,18 @@
+﻿plant_cn,plant_en,plant_sci,type,distribution,flowering_south,flowering_mid,flowering_north,optimal_temp_c,honey_yield_kg_per_colony,honey_color,importance,honey_color_hex,plant_type,flowering_duration_days,inflorescence_type
+油菜,Rape/Canola,Brassica campestris/napus,主要蜜源,全国广泛种植,12月-3月,3月-4月,5月-7月,16-22,10-30,浅琥珀色,最大宗蜜源，覆盖全年,#FFE0B2,一年生草本,25-35,总状花序
+紫云英,Chinese Milk Vetch,Astragalus sinicus,主要蜜源,长江中下游(赣湘鄂苏浙皖),1月下旬-3月,3月中旬-4月下旬,4月下旬-5月上旬,25,20-50,浅琥珀色,南方春季大宗蜜源,#FFE0B2,一年生草本,15-20,伞形花序
+荔枝,Lychee,Litchi chinensis,主要蜜源,粤桂闽琼,2月上旬-4月,3月-4月,,20-28,10-20,琥珀色,岭南特色蜜源，有大小年,#FFB74D,常绿乔木,20-35,圆锥花序
+龙眼,Longan,Dimocarpus longan,主要蜜源,闽粤桂琼,3月中旬-4月,4月中旬-5月,5月上旬-6月上旬,24-26,15-25,琥珀色,岭南蜜源，蜜多粉少,#FFB74D,常绿乔木,25-40,圆锥花序
+柑橘,Citrus,Citrus reticulata,主要蜜源,川闽粤桂浙赣,2月-3月,3月-4月,4月-5月,22,5-15,浅琥珀色,花期约20天,#FFE0B2,常绿乔木,15-25,总状花序(单花或聚伞花序)
+刺槐(洋槐),Black Locust,Robinia pseudoacacia,主要蜜源,苏鲁豫冀陕甘辽,4月下旬-5月上旬,5月上旬-中旬,5月下旬-6月上旬,25-27,20-40,水白色,上等蜜，花期短仅10-15天,#FFFDE7,落叶乔木,10-15,总状花序
+枣树,Jujube,Ziziphus jujuba,主要蜜源,鲁豫冀晋陕,5月中旬,5月下旬-6月中旬,6月,26-32,15-30,琥珀色,花期约30天，花粉少,#FFB74D,落叶乔木,30-40,聚伞花序
+荆条,Vitex,Vitex negundo var. incisa,主要蜜源,辽冀京晋鲁陕,6月上旬,6月中旬-7月下旬,7月,25-28,20-40,浅琥珀色,华北主要蜜源，花期30-40天,#FFE0B2,落叶灌木,30-40,圆锥花序
+椴树,Linden/Basswood,Tilia amurensis/mandshurica,主要蜜源,黑吉辽(长白山/小兴安岭),,6月下旬-7月中旬,7月,22-25,20-30,特白色,东北特等蜜源,#FFF8E1,落叶乔木,15-25,聚伞花序
+向日葵,Sunflower,Helianthus annuus,主要蜜源,黑吉辽蒙新,7月下旬,8月上旬-中旬,8月中旬-9月上旬,22-27,20-50,浅黄色,夏秋季蜜源,,一年生草本,20-30,头状花序
+棉花,Cotton,Gossypium hirsutum,主要蜜源,新鲁豫鄂苏皖,7月上旬,7月中旬-8月,8月-9月,35-38,15-30,浅色,花期40-50天，新疆可产100-150kg/群,#FFF3E0,一年生草本(栽培),40-50,单花(花单生)
+荞麦,Buckwheat,Fagopyrum esculentum,主要蜜源,蒙晋陕宁甘,9月-10月,8月中旬-9月,7月下旬-9月,25-28,20-50,深琥珀色,秋季蜜源，花期25-40天,#FFB74D,一年生草本,25-40,总状花序(伞房状)
+老瓜头,Cynanchum,Cynanchum komarovii,主要蜜源,蒙宁陕,,5月-7月,5月-7月,25-30,50-60,浅色,西北干旱区高产蜜源,#FFF3E0,多年生草本,30-50,聚伞花序
+野坝子,Wild Balsam,Elsholtzia rugulosa,主要蜜源,滇川黔,9月-12月,,,20-22,15-20,浅色,西南秋冬蜜源，花期约60天,#FFF3E0,一年生草本(半灌木),50-70,穗状花序(轮伞花序)
+鸭脚木,Ivy Tree,Schefflera heptaphylla,主要蜜源,粤桂闽琼滇,10月-1月,,,8-22,10-15,琥珀色,南方冬季主要蜜源,#FFB74D,常绿乔木/灌木,30-45,伞形花序(圆锥状排列)
+野桂花(柃木),Wild Osmanthus,Eurya spp.,主要蜜源,闽浙赣湘鄂粤桂,10月-3月,,,14-20,20-30,浅白色,中国最珍贵蜜种之一,#FFF9C4,常绿灌木/小乔木,20-40,单花(花单生或簇生)
+枇杷,Loquat,Eriobotrya japonica,主要蜜源,浙苏皖闽鄂,11月-12月,,,18-22,5-10,浅色,冬季蜜源，药用价值高,#FFF3E0,常绿乔木,20-30,圆锥花序
