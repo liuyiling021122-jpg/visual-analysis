@@ -1,0 +1,4 @@
+.tencent-map--hide-logo img[src*='//mapapi.qq.com/web/jsapi/logo/logo_def.png'],
+.tencent-map--hide-logo .logo-text {
+  display: none !important;
+}

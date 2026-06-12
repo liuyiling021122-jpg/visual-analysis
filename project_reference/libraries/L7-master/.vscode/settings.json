@@ -1,0 +1,28 @@
+{
+  // An array of language ids which should be validated by ESLint
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  // required to make the extension pickup the flat config
+  "eslint.experimental.useFlatConfig": true,
+
+  // typescript auto-format settings
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+
+  // Python configuration for terminal
+  "terminal.integrated.env.osx": {
+    "PYTHON": "/usr/local/bin/python3"
+  },
+  "chat.tools.terminal.autoApprove": {
+    "/^git add packages/core/package\\.json packages/core/src/services/interaction/InteractionService\\.ts packages/core/src/services/scene/SceneService\\.ts && git commit -m \"revert: 回滚事件系统到 hammerjs 实现，重新添加 hammerjs 依赖\"$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

@@ -1,0 +1,915 @@
+[
+  {
+    "file": "养蜂数据/backup_before_clean/bee_product_prices_enriched.csv",
+    "rows": 26,
+    "cols": 29,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "royal_jelly_yuan_per_kg",
+      "pollen_yuan_per_kg",
+      "propolis_yuan_per_kg",
+      "beeswax_yuan_per_kg",
+      "bee_venom_yuan_per_g",
+      "honey_production_tonnes",
+      "bee_colonies",
+      "beekeeper_households",
+      "honey_yield_kg_per_colony",
+      "export_tonnes",
+      "export_value_10000usd"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/beekeeper_cost_detail.csv",
+    "rows": 21,
+    "cols": 21,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "feed_sugar",
+      "pollen_feed",
+      "transport_fuel",
+      "transport_toll",
+      "transport_maintain",
+      "transport_labor",
+      "medicine",
+      "equipment",
+      "bee_queen",
+      "other_cost",
+      "total_cost"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/beekeeper_enterprise_trend.csv",
+    "rows": 16,
+    "cols": 11,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "new_registrations",
+      "total_enterprises",
+      "yoy_growth_pct",
+      "new_reg_yoy_pct",
+      "cancelled_annual",
+      "net_increase",
+      "honey_processing_enterprises",
+      "processing_pct_of_total",
+      "data_note",
+      "source"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/beekeeper_income_detail.csv",
+    "rows": 21,
+    "cols": 18,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "honey_sales",
+      "royal_jelly",
+      "pollen",
+      "propolis",
+      "beeswax",
+      "pollination_service",
+      "colony_sales",
+      "other_income",
+      "total_income",
+      "honey_share_pct",
+      "pollination_share_pct"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/beekeeper_national_annual.csv",
+    "rows": 26,
+    "cols": 12,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "colonies_10k",
+      "beekeeper_households",
+      "migratory_households",
+      "migratory_ratio",
+      "total_practitioners",
+      "colonies_per_household",
+      "colonies_source",
+      "method",
+      "gdp_per_capita_yuan",
+      "rural_per_capita_income_yuan",
+      "honey_import_tonnes"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/beekeeper_profit_by_mode.csv",
+    "rows": 21,
+    "cols": 29,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "intensive_migratory_income",
+      "intensive_migratory_cost",
+      "intensive_migratory_profit",
+      "semi_migratory_income",
+      "semi_migratory_cost",
+      "semi_migratory_profit",
+      "stationary_italian_income",
+      "stationary_italian_cost",
+      "stationary_italian_profit",
+      "stationary_chinese_income",
+      "stationary_chinese_cost"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/beekeeper_province_annual_series.csv",
+    "rows": 74,
+    "cols": 13,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "province",
+      "province_lat",
+      "province_lng",
+      "year",
+      "colonies_interpolated_10k",
+      "source_interpolated",
+      "colonies_fao_10k",
+      "colony_share_pct",
+      "beekeeper_households_est",
+      "honey_production_2023_10kt",
+      "yield_per_colony_kg",
+      "beekeeping_enterprises_2025"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/china_bee_industry_latest.csv",
+    "rows": 33,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "category",
+      "indicator",
+      "year",
+      "value",
+      "unit",
+      "source",
+      "notes"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/china_bee_species_composition.csv",
+    "rows": 68,
+    "cols": 1,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "# ============================================================"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/climate_factors_province_2000_2023.csv",
+    "rows": 240,
+    "cols": 17,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "省份",
+      "年份",
+      "年平均气温(°C)",
+      "气温距平(°C)",
+      "年降水量(mm)",
+      "降水年变化率(%)",
+      "春季均温(°C)",
+      "无霜期(天)",
+      "日照时数(h)",
+      "平均风速(m/s)",
+      "平均相对湿度(%)",
+      "高温日数(≥35°C)"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/colonies_1961_2025.csv",
+    "rows": 99,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "region",
+      "province",
+      "year",
+      "bee_colonies",
+      "bee_type",
+      "source_note",
+      "source"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/data_migration_routes_detailed.csv",
+    "rows": 178,
+    "cols": 27,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "route_type",
+      "era",
+      "route_name",
+      "route_description",
+      "beekeeper_name",
+      "beekeeper_origin",
+      "case_year",
+      "segment_order",
+      "from_location",
+      "to_location",
+      "from_lat",
+      "from_lng"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/flowering_calendar_by_province.csv",
+    "rows": 111,
+    "cols": 14,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "province",
+      "province_lat",
+      "province_lng",
+      "honey_plant",
+      "plant_type",
+      "source_category",
+      "start_month",
+      "end_month",
+      "peak_month",
+      "flowering_months",
+      "nectar_yield_kg_per_colony",
+      "honey_grade"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/fruit_data_merged.csv",
+    "rows": 49,
+    "cols": 27,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "fruit_cn",
+      "year",
+      "fruit_en",
+      "fruit_sci",
+      "pollination_type",
+      "bee_dependency",
+      "self_fertile",
+      "main_provinces",
+      "bloom_south",
+      "bloom_mid",
+      "bloom_north",
+      "optimal_temp_c"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/honey_export_price.csv",
+    "rows": 65,
+    "cols": 18,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "年份",
+      "蜂蜜产量_吨",
+      "蜂群数量_群",
+      "单产_千克每群",
+      "出口量_吨",
+      "出口额_万美元",
+      "收购价_元每吨",
+      "收购价_元每斤",
+      "零售价_油菜蜜_元每斤",
+      "零售价_洋槐蜜_元每斤",
+      "零售价_野花蜜_元每斤",
+      "零售价_高档蜜_元每斤"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/nectar_source_plants.csv",
+    "rows": 17,
+    "cols": 16,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "plant_cn",
+      "plant_en",
+      "plant_sci",
+      "type",
+      "distribution",
+      "flowering_south",
+      "flowering_mid",
+      "flowering_north",
+      "optimal_temp_c",
+      "honey_yield_kg_per_colony",
+      "honey_color",
+      "importance"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/pesticide_use_2000_2023.csv",
+    "rows": 24,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "农药使用量_万吨",
+      "化学农药原药产量_万吨",
+      "果园面积_千公顷",
+      "农作物总播种面积_千公顷",
+      "果园面积占比_百分比",
+      "单位面积农药使用量_千克每公顷"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/pollination_service_market.csv",
+    "rows": 23,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "region",
+      "crop",
+      "rental_price_per_colony",
+      "colonies_per_ha",
+      "period_days",
+      "source",
+      "year"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/rapeseed_acreage_1978_2025.csv",
+    "rows": 132,
+    "cols": 8,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "province",
+      "county",
+      "rapeseed_area_1000ha",
+      "rapeseed_production_10000tonnes",
+      "yield_kg_per_ha",
+      "type",
+      "source"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/ref_migration_routes_merged.csv",
+    "rows": 10,
+    "cols": 28,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "record_type",
+      "era",
+      "period",
+      "dominant_transport",
+      "avg_distance_km",
+      "route_count",
+      "route_pattern",
+      "migratory_ratio",
+      "key_features",
+      "main_routes",
+      "route",
+      "distance_km"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/sim_county.csv",
+    "rows": 2000,
+    "cols": 18,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "county",
+      "farm_id",
+      "beekeeping_mode",
+      "bee_colonies_10k",
+      "honey_production_tonnes",
+      "yield_kg_per_colony"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/sim_farms.csv",
+    "rows": 9592,
+    "cols": 21,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "county",
+      "farm_id",
+      "beekeeping_mode",
+      "colonies_count",
+      "honey_production_kg",
+      "yield_kg_per_colony"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/sim_panel_province_year.csv",
+    "rows": 806,
+    "cols": 34,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "county",
+      "farm_id",
+      "beekeeping_mode",
+      "bee_colonies_10k",
+      "colonies_share_pct",
+      "honey_production_tonnes"
+    ]
+  },
+  {
+    "file": "养蜂数据/backup_before_clean/sim_pollination_service.csv",
+    "rows": 320,
+    "cols": 14,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "location",
+      "crop",
+      "rental_price_range_yuan",
+      "rental_price_mid_yuan",
+      "colonies_per_ha",
+      "period_days"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/bee_product_national_annual.csv",
+    "rows": 65,
+    "cols": 40,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "honey_production_tonnes",
+      "bee_colonies",
+      "honey_yield_kg_per_colony",
+      "export_tonnes",
+      "export_value_10000usd",
+      "purchase_price_yuan_per_tonne",
+      "purchase_price_yuan_per_jin",
+      "retail_rape_yuan_per_jin",
+      "retail_acacia_yuan_per_jin",
+      "retail_wildflower_yuan_per_jin",
+      "retail_premium_yuan_per_jin"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/beekeeper_enterprise_trend.csv",
+    "rows": 16,
+    "cols": 11,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "new_registrations",
+      "total_enterprises",
+      "yoy_growth_pct",
+      "new_reg_yoy_pct",
+      "cancelled_annual",
+      "net_increase",
+      "honey_processing_enterprises",
+      "processing_pct_of_total",
+      "data_note",
+      "source"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/beekeeper_finance_detail.csv",
+    "rows": 21,
+    "cols": 37,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "feed_sugar",
+      "pollen_feed",
+      "transport_fuel",
+      "transport_toll",
+      "transport_maintain",
+      "transport_labor",
+      "medicine",
+      "equipment",
+      "bee_queen",
+      "other_cost",
+      "total_cost"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/beekeeper_national_annual.csv",
+    "rows": 26,
+    "cols": 12,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "colonies_10k",
+      "beekeeper_households",
+      "migratory_households",
+      "migratory_ratio",
+      "total_practitioners",
+      "colonies_per_household",
+      "colonies_source",
+      "method",
+      "gdp_per_capita_yuan",
+      "rural_per_capita_income_yuan",
+      "honey_import_tonnes"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/beekeeper_profit_by_mode.csv",
+    "rows": 21,
+    "cols": 29,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "intensive_migratory_income",
+      "intensive_migratory_cost",
+      "intensive_migratory_profit",
+      "semi_migratory_income",
+      "semi_migratory_cost",
+      "semi_migratory_profit",
+      "stationary_italian_income",
+      "stationary_italian_cost",
+      "stationary_italian_profit",
+      "stationary_chinese_income",
+      "stationary_chinese_cost"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/beekeeper_province_annual_series.csv",
+    "rows": 74,
+    "cols": 13,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "province",
+      "province_lat",
+      "province_lng",
+      "year",
+      "colonies_interpolated_10k",
+      "source_interpolated",
+      "colonies_fao_10k",
+      "colony_share_pct",
+      "beekeeper_households_est",
+      "honey_production_2023_10kt",
+      "yield_per_colony_kg",
+      "beekeeping_enterprises_2025"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/china_bee_industry_latest.csv",
+    "rows": 27,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "category",
+      "indicator",
+      "year",
+      "value",
+      "unit",
+      "source",
+      "notes"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/china_bee_species_composition.csv",
+    "rows": 46,
+    "cols": 6,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "section",
+      "year",
+      "western_bee_pct",
+      "chinese_bee_pct",
+      "data_source",
+      "notes"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/climate_factors_province_2000_2023.csv",
+    "rows": 240,
+    "cols": 17,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "省份",
+      "年份",
+      "年平均气温(°C)",
+      "气温距平(°C)",
+      "年降水量(mm)",
+      "降水年变化率(%)",
+      "春季均温(°C)",
+      "无霜期(天)",
+      "日照时数(h)",
+      "平均风速(m/s)",
+      "平均相对湿度(%)",
+      "高温日数(≥35°C)"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/colonies_1961_2025.csv",
+    "rows": 99,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "region",
+      "province",
+      "year",
+      "bee_colonies",
+      "bee_type",
+      "source_note",
+      "source"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/data_migration_routes_detailed.csv",
+    "rows": 178,
+    "cols": 27,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "route_type",
+      "era",
+      "route_name",
+      "route_description",
+      "beekeeper_name",
+      "beekeeper_origin",
+      "case_year",
+      "segment_order",
+      "from_location",
+      "to_location",
+      "from_lat",
+      "from_lng"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/flowering_calendar_by_province.csv",
+    "rows": 111,
+    "cols": 14,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "province",
+      "province_lat",
+      "province_lng",
+      "honey_plant",
+      "plant_type",
+      "source_category",
+      "start_month",
+      "end_month",
+      "peak_month",
+      "flowering_months",
+      "nectar_yield_kg_per_colony",
+      "honey_grade"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/fruit_data_merged.csv",
+    "rows": 49,
+    "cols": 27,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "fruit_cn",
+      "year",
+      "fruit_en",
+      "fruit_sci",
+      "pollination_type",
+      "bee_dependency",
+      "self_fertile",
+      "main_provinces",
+      "bloom_south",
+      "bloom_mid",
+      "bloom_north",
+      "optimal_temp_c"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/nectar_source_plants.csv",
+    "rows": 17,
+    "cols": 16,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "plant_cn",
+      "plant_en",
+      "plant_sci",
+      "type",
+      "distribution",
+      "flowering_south",
+      "flowering_mid",
+      "flowering_north",
+      "optimal_temp_c",
+      "honey_yield_kg_per_colony",
+      "honey_color",
+      "importance"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/pesticide_use_2000_2023.csv",
+    "rows": 24,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "农药使用量_万吨",
+      "化学农药原药产量_万吨",
+      "果园面积_千公顷",
+      "农作物总播种面积_千公顷",
+      "果园面积占比_百分比",
+      "单位面积农药使用量_千克每公顷"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/pollination_service_market.csv",
+    "rows": 23,
+    "cols": 7,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "region",
+      "crop",
+      "rental_price_per_colony",
+      "colonies_per_ha",
+      "period_days",
+      "source",
+      "year"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/rapeseed_acreage_1978_2025.csv",
+    "rows": 132,
+    "cols": 8,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "year",
+      "province",
+      "county",
+      "rapeseed_area_1000ha",
+      "rapeseed_production_10000tonnes",
+      "yield_kg_per_ha",
+      "type",
+      "source"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/ref_migration_routes_merged.csv",
+    "rows": 10,
+    "cols": 28,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "record_type",
+      "era",
+      "period",
+      "dominant_transport",
+      "avg_distance_km",
+      "route_count",
+      "route_pattern",
+      "migratory_ratio",
+      "key_features",
+      "main_routes",
+      "route",
+      "distance_km"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/sim_county.csv",
+    "rows": 2000,
+    "cols": 18,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "county",
+      "farm_id",
+      "beekeeping_mode",
+      "bee_colonies_10k",
+      "honey_production_tonnes",
+      "yield_kg_per_colony"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/sim_farms.csv",
+    "rows": 9592,
+    "cols": 21,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "county",
+      "farm_id",
+      "beekeeping_mode",
+      "colonies_count",
+      "honey_production_kg",
+      "yield_kg_per_colony"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/sim_panel_province_year.csv",
+    "rows": 806,
+    "cols": 34,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "county",
+      "farm_id",
+      "beekeeping_mode",
+      "bee_colonies_10k",
+      "colonies_share_pct",
+      "honey_production_tonnes"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/sim_pollination_service.csv",
+    "rows": 320,
+    "cols": 14,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "granularity",
+      "year",
+      "province",
+      "province_lat",
+      "province_lng",
+      "region",
+      "location",
+      "crop",
+      "rental_price_range_yuan",
+      "rental_price_mid_yuan",
+      "colonies_per_ha",
+      "period_days"
+    ]
+  },
+  {
+    "file": "养蜂数据/datasets/weather_daily_migration_routes.csv",
+    "rows": 4927,
+    "cols": 33,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "route_name",
+      "route_type",
+      "beekeeper",
+      "location",
+      "latitude",
+      "longitude",
+      "date",
+      "stay_start",
+      "stay_end",
+      "in_stay_period",
+      "buffer_before",
+      "buffer_after"
+    ]
+  },
+  {
+    "file": "养蜂数据/综合数据/模拟数据.csv",
+    "rows": 12718,
+    "cols": 287,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "data_table",
+      "annual_avg_temp_c",
+      "annual_precipitation_mm",
+      "area_1000ha",
+      "area_yoy_pct",
+      "avg_distance_km",
+      "avg_humidity_pct",
+      "avg_retail_yuan_per_jin",
+      "avg_wind_speed_m_s",
+      "bee_colonies",
+      "bee_colonies_10k",
+      "bee_dependency"
+    ]
+  },
+  {
+    "file": "养蜂数据/综合数据/真实数据.csv",
+    "rows": 1179,
+    "cols": 287,
+    "encoding": "utf-8-sig",
+    "fields": [
+      "data_table",
+      "annual_avg_temp_c",
+      "annual_precipitation_mm",
+      "area_1000ha",
+      "area_yoy_pct",
+      "avg_distance_km",
+      "avg_humidity_pct",
+      "avg_retail_yuan_per_jin",
+      "avg_wind_speed_m_s",
+      "bee_colonies",
+      "bee_colonies_10k",
+      "bee_dependency"
+    ]
+  }
+]

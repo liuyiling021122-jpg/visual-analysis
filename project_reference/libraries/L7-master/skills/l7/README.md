@@ -1,0 +1,213 @@
+# L7 Skill Library
+
+> 为 AntV L7 地理空间可视化引擎设计的结构化技能知识库，遵循 skill-creator 最佳实践。
+
+## 🎯 设计原则
+
+基于 [skill-creator](https://github.com/anthropics/skills) 的最佳实践：
+
+1. **渐进式披露** (Progressive Disclosure)
+   - SKILL.md: 概览和快速入门 (~200 lines)
+   - references/: 详细文档，按需加载
+   - metadata/: 机器可读的依赖和标签
+
+2. **按领域组织** (Domain Organization)
+   - references/core/: 核心功能（场景初始化、地图类型）
+   - references/data/: 数据处理（GeoJSON、CSV、解析器）
+   - references/layers/: 图层类型（点、线、面、热力图等）
+   - references/interaction/: 交互组件（事件、Popup、Controls）
+   - references/animation/: 动画效果（图层动画、轨迹动画）
+   - references/performance/: 性能优化
+
+3. **精简高效** (Concise and Efficient)
+   - 避免冗余，信息只存在一个地方
+   - 优先代码示例而非冗长解释
+   - 详细内容移至 references，保持主文件精简
+
+## 📁 目录结构
+
+```
+.skills/
+├── SKILL.md                    # 主入口：概览 + 快速开始 + 导航
+├── index.md                    # 技能索引：场景查找 + 文档导航
+├── README.md                   # 本文件：使用说明
+├── references/                 # 详细文档（按需加载）
+│   ├── core/
+│   │   ├── scene.md           # Scene 完整文档
+│   │   ├── scene-methods.md   # Scene 方法详解
+│   │   ├── scene-lifecycle.md # 场景生命周期
+│   │   └── map-types.md       # 地图类型配置
+│   ├── data/
+│   │   ├── geojson.md         # GeoJSON 数据处理
+│   │   ├── csv.md             # CSV 数据处理
+│   │   ├── json.md            # JSON 数据处理
+│   │   ├── source-mvt.md      # MVT 瓦片数据源
+│   │   └── parser.md          # 数据解析配置
+│   ├── layers/
+│   │   ├── base-layer.md      # 基础图层 API
+│   │   ├── point.md           # 点图层
+│   │   ├── line.md            # 线图层
+│   │   ├── polygon.md         # 面图层
+│   │   ├── heatmap.md         # 热力图
+│   │   ├── image.md           # 图片图层
+│   │   └── tile-vector.md     # 矢量瓦片图层
+│   ├── interaction/
+│   │   ├── events.md          # 事件处理
+│   │   ├── popup.md           # Popup 组件
+│   │   ├── controls.md        # 控件组件
+│   │   └── components.md      # Marker/Legend
+│   ├── animation/
+│   │   └── layer-animation.md # 图层动画和轨迹动画
+│   ├── performance/
+│   │   └── optimization.md    # 性能优化指南
+└── metadata/
+    ├── skill-dependency.json  # 技能依赖关系
+    ├── skill-tags.json        # 中英文标签
+    └── version-compatibility.json
+```
+
+## 🚀 快速开始
+
+### 对于 AI 模型
+
+**三级加载系统**:
+
+1. **始终加载**: SKILL.md (~200 lines)
+   - 获取概览和快速入门
+   - 查看文档导航表
+
+2. **按需加载**: references/\*.md
+   - 根据用户需求选择具体文档
+   - 示例: "显示点位" → 加载 `references/layers/point.md`
+
+3. **辅助信息**: metadata/\*.json
+   - 检查依赖关系
+   - 搜索相关标签
+
+### 文档选择策略
+
+| 用户请求   | 加载文档                                                |
+| ---------- | ------------------------------------------------------- |
+| "创建地图" | references/core/scene.md                                |
+| "显示点位" | references/layers/point.md + references/data/geojson.md |
+| "热力图"   | references/layers/heatmap.md                            |
+| "添加交互" | references/interaction/events.md                        |
+| "性能慢"   | references/performance/optimization.md                  |
+
+### 技能组合模式
+
+复杂需求需要组合多个 references：
+
+```
+地图可视化 = scene.md + polygon.md + point.md + events.md + popup.md
+轨迹动画 = scene.md + line.md + layer-animation.md
+热力分析 = scene.md + heatmap.md + parser.md
+```
+
+## 📖 Reference 文件格式
+
+每个 reference 文件遵循统一结构：
+
+```markdown
+# 标题
+
+## 目录 (对于 >100 行的文件)
+
+## 快速示例
+
+## 详细配置
+
+## 使用场景
+
+## 常见问题
+
+## 相关文档
+```
+
+## 🔍 检索策略
+
+### 按标签检索
+
+使用 `metadata/skill-tags.json`:
+
+```json
+{
+  "point-layer": ["point", "scatter", "bubble", "点", "散点", "气泡"],
+  "scene-initialization": ["scene", "map", "init", "场景", "地图", "初始化"]
+}
+```
+
+### 按依赖检索
+
+使用 `metadata/skill-dependency.json`:
+
+```json
+{
+  "point-layer": {
+    "requires": ["scene-initialization"],
+    "optional": ["source-geojson", "color-mapping"],
+    "nextSteps": ["event-handling", "popup"]
+  }
+}
+```
+
+## 💡 最佳实践
+
+### 避免重复加载
+
+```
+❌ 不要同时加载 SKILL.md 和所有 references
+✅ 先读 SKILL.md，根据需求加载特定 references
+```
+
+### 组合使用文档
+
+```
+❌ 不要在单个 reference 中重复基础概念
+✅ 通过交叉引用链接相关文档
+```
+
+### 优先示例代码
+
+```
+❌ 避免冗长的文字解释
+✅ 提供清晰的代码示例和注释
+```
+
+## 🔧 维护指南
+
+### 添加新 Reference
+
+1. 确定所属领域（core/data/layers/etc.）
+2. 创建文件到对应 `references/` 子目录
+3. 更新 `SKILL.md` 的导航表
+4. 更新 `index.md` 的文档列表
+5. 添加标签到 `metadata/skill-tags.json`
+6. 添加依赖到 `metadata/skill-dependency.json`
+
+### 更新现有 Reference
+
+1. 保持文件结构一致
+2. 确保交叉引用链接有效
+3. 更新相关的 metadata 文件
+4. 记录版本变化和 breaking changes
+
+## 📊 统计信息
+
+- **核心文档**: 4 个（场景、方法、生命周期、地图类型）
+- **数据处理**: 5 个（GeoJSON、CSV、JSON、MVT、解析器）
+- **图层类型**: 7 个（基础、点、线、面、热力、图片、瓦片）
+- **交互控制**: 4 个（事件、Popup、控件、组件）
+- **动画效果**: 1 个（图层动画）
+- **性能优化**: 1 个
+- **总计**: 22 个核心文档
+
+## 🔗 相关资源
+
+- **官方文档**: https://l7.antv.antgroup.com/
+- **GitHub**: https://github.com/antvis/L7
+- **Skill Creator**: https://github.com/anthropics/skills
+
+---
+
+**注意**: 本技能库设计用于 AI 模型代码生成，建议配合向量检索系统使用以获得最佳效果。

@@ -1,0 +1,27 @@
+﻿year,colonies_10k,beekeeper_households,migratory_households,migratory_ratio,total_practitioners,colonies_per_household,colonies_source,method,gdp_per_capita_yuan,rural_per_capita_income_yuan,honey_import_tonnes
+2000,485,269444,80833,0.3,754443,18.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),7858,2282
+2001,492,265946,80848,0.304,744649,18.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),8622,2366
+2002,500,263158,81053,0.308,736842,19.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),9398,2476
+2003,508,260513,81280,0.312,729436,19.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),10542,2622
+2004,516,258000,81528,0.316,722400,20.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),12336,2936
+2005,525,256098,81951,0.32,717074,20.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),14185,3255
+2006,535,254762,82033,0.322,713334,21.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),16500,3587
+2007,545,253488,82130,0.324,709766,21.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),20169,4140
+2008,560,254545,82982,0.326,712726,22.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),23708,4761
+2009,575,261364,85727,0.328,731819,22.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),25575,5153
+2010,590,268182,88500,0.33,750910,22.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),30015,6272,2188
+2011,605,268889,89809,0.334,752889,22.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),36855,7394
+2012,620,269565,91113,0.338,754782,23.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),40431,8389
+2013,635,270213,92413,0.342,756596,23.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),44281,9430
+2014,650,270833,93708,0.346,758332,24.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),47802,10489
+2015,665,277083,96979,0.35,775832,24.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),50912,11422,6518
+2016,680,277551,95293,0.343,777143,24.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),54849,12363
+2017,695,278000,93593,0.337,778400,25.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),60691,13432
+2018,710,284000,93720,0.33,795200,25.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),66726,14617
+2019,725,284314,92402,0.325,796079,25.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),71453,16021
+2020,740,284615,91077,0.32,796922,26.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),73338,17131
+2021,755,290385,90019,0.31,813078,26.0,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),83111,18931
+2022,770,290566,87170,0.3,813585,26.5,FAOSTAT,colonies / colonies_per_beekeeper (academic ratio),87385,20133
+2023,785,296226,85906,0.29,829433,26.5,Industry,colonies / colonies_per_beekeeper (academic ratio),91746,21691
+2024,795,294444,82444,0.28,824443,27.0,Industry_Est,colonies / colonies_per_beekeeper (academic ratio),95677,23119,3186
+2025,800,296296,82963,0.28,829629,27.0,Projected,colonies / colonies_per_beekeeper (academic ratio)
