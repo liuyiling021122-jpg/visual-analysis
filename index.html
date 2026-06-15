@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>追花为生 | 中国流动养蜂人可视分析系统</title>
+    <link rel="stylesheet" href="css/design-tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/visualization-placeholders.css" />
+  </head>
+  <body>
+    <div class="app-shell" data-app-shell>
+      <header class="app-region app-region-top" data-component-slot="top-toolbar">
+        <noscript>需要启用 JavaScript 才能载入系统窗口。</noscript>
+      </header>
+
+      <main class="app-grid" aria-label="追花为生信息可视化系统主界面">
+        <aside class="app-region app-region-left" data-component-slot="route-map-panel"></aside>
+
+        <section class="app-region app-region-main" data-component-slot="route-rhythm-view"></section>
+
+        <aside class="app-region app-region-right" data-component-slot="livelihood-risk-panel"></aside>
+      </main>
+
+      <footer class="app-region app-region-bottom" data-component-slot="status-bar"></footer>
+    </div>
+
+    <div class="floating-layer" data-component-slot="weather-detail-panel"></div>
+    <div class="floating-layer" data-component-slot="tooltip-layer"></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

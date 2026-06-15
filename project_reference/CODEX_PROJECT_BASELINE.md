@@ -1,6 +1,10 @@
 # Codex Project Baseline
 
-Current design baseline: `VISUAL_DESIGN_PROPOSAL_v2.md`.
+Current design baseline: `VISUAL_DESIGN_PROPOSAL_v2_latest.md`.
+
+Previous design proposal retained for reference: `VISUAL_DESIGN_PROPOSAL_v2.md`.
+
+`VISUAL_DESIGN_PROPOSAL_v2_latest.md` was imported from `VISUAL_DESIGN_PROPOSAL_v2(1).md`. Its content currently matches the previous v2 proposal, so no design conflicts were found during comparison. If a future imported proposal differs, use the newest imported proposal where conflicts exist.
 
 Detailed central-view spec: `ROUTE_RHYTHM_VIEW_SPEC.md`.
 

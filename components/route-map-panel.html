@@ -1,0 +1,73 @@
+<section class="panel" data-window="route-map-panel" aria-label="路线地图选择器">
+  <header class="panel-header">
+    <div>
+      <span class="eyebrow">View 01</span>
+      <h2 class="panel-title">路线地图选择器</h2>
+    </div>
+    <button class="panel-action" type="button" aria-label="地图图层设置">◎</button>
+  </header>
+
+  <div class="panel-body">
+    <div class="route-map-stage" data-route-map-stage role="button" tabindex="0" aria-label="放大查看路线地图">
+      <div class="panel-loading">正在载入迁徙路线地图...</div>
+    </div>
+
+    <div class="route-map-meta" data-route-map-meta>
+      <span>经纬度路线投影</span>
+      <span>箭头表示迁徙方向</span>
+    </div>
+
+    <ul class="route-list" aria-label="路线列表">
+      <li>
+        <label>
+          <input type="checkbox" checked data-route="east-coastal" />
+          <span>东线（沿海线）</span>
+          <span class="route-type-dot" style="background:#d88c52"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox" data-route="west-northwest" />
+          <span>西线（西北线）</span>
+          <span class="route-type-dot" style="background:#8dbfc1"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox" data-route="central-route" />
+          <span>中线（京广线）</span>
+          <span class="route-type-dot" style="background:#c89a5b"></span>
+        </label>
+      </li>
+      <li>
+        <label>
+          <input type="checkbox" data-route="south-route" />
+          <span>南线</span>
+          <span class="route-type-dot" style="background:#8fae8e"></span>
+        </label>
+      </li>
+    </ul>
+
+    <div class="extended-route-list" data-extended-route-list>
+      <div class="panel-loading">扩展路线载入中...</div>
+    </div>
+
+    <div class="route-map-expanded" data-route-map-expanded hidden>
+      <div class="route-map-expanded-backdrop" data-route-map-collapse></div>
+      <section class="route-map-expanded-panel" aria-label="放大路线地图">
+        <header class="route-map-expanded-header">
+          <div>
+            <span class="eyebrow">Expanded Route Map</span>
+            <h3 class="section-title">迁徙路线流线图</h3>
+          </div>
+          <button class="panel-action route-map-collapse-button" type="button" data-route-map-collapse aria-label="收起路线地图">收起</button>
+        </header>
+        <div class="route-map-expanded-stage" data-route-map-expanded-stage></div>
+        <div class="route-map-meta" data-route-map-expanded-meta>
+          <span>点击路线可加入/取消对比</span>
+          <span>流线方向：起点 → 终点</span>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>

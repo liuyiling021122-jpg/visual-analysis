@@ -1,0 +1,918 @@
+.map-placeholder,
+.rhythm-placeholder,
+.chart-placeholder,
+.weather-detail-placeholder {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  background:
+    linear-gradient(rgba(214, 208, 199, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 208, 199, 0.16) 1px, transparent 1px),
+    rgba(251, 250, 246, 0.62);
+  background-size: 28px 28px;
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.map-placeholder {
+  min-height: 310px;
+}
+
+.route-map-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 330px;
+  background:
+    radial-gradient(circle at 58% 42%, rgba(255, 255, 255, 0.74), transparent 52%),
+    linear-gradient(rgba(214, 208, 199, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 208, 199, 0.1) 1px, transparent 1px),
+    rgba(251, 250, 246, 0.76);
+  background-size:
+    auto,
+    24px 24px,
+    24px 24px,
+    auto;
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+  cursor: zoom-in;
+}
+
+.route-map-stage .panel-loading {
+  margin: var(--space-3);
+}
+
+.route-map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 330px;
+}
+
+.route-map-province {
+  fill: rgba(255, 255, 255, 0.46);
+  stroke: rgba(154, 148, 136, 0.38);
+  stroke-width: 0.46;
+  vector-effect: non-scaling-stroke;
+}
+
+.route-map-undelimited-boundary {
+  fill: none;
+  stroke: rgba(120, 114, 102, 0.42);
+  stroke-dasharray: 2 3;
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+}
+
+.route-map-region-label {
+  fill: rgba(103, 99, 91, 0.46);
+  font-size: 9px;
+  font-weight: var(--font-weight-medium);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(251, 250, 246, 0.74);
+  stroke-linejoin: round;
+  stroke-width: 2px;
+}
+
+.route-map-flow {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition:
+    opacity 160ms ease,
+    stroke-width 160ms ease;
+}
+
+.route-map-svg.is-expanded .route-map-flow {
+  stroke-width: 2.2;
+  opacity: 0;
+  animation-name: route-segment-reveal;
+  animation-duration: 620ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+.route-map-svg.is-expanded .route-map-route.is-muted .route-map-flow {
+  stroke-width: 1.3;
+}
+
+.route-map-svg.is-expanded .route-map-route.is-selected .route-map-flow {
+  stroke-width: 3.2;
+}
+
+.route-map-svg.is-expanded .route-map-route.is-selected .route-map-flow.is-animated-flow {
+  stroke-dasharray: 9 12;
+  animation:
+    route-segment-reveal 620ms ease-out var(--reveal-delay, 0s) forwards,
+    route-flow-forward 1.55s linear calc(var(--reveal-delay, 0s) + 0.72s + var(--flow-delay, 0s)) infinite;
+}
+
+.route-map-svg.is-expanded .route-map-route.is-muted .route-map-flow.is-animated-flow {
+  stroke-dasharray: 5 14;
+  animation:
+    route-segment-muted-reveal 620ms ease-out var(--reveal-delay, 0s) forwards,
+    route-flow-forward 2.4s linear calc(var(--reveal-delay, 0s) + 0.72s + var(--flow-delay, 0s)) infinite;
+}
+
+.route-map-route-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 18;
+  cursor: pointer;
+  pointer-events: stroke;
+  vector-effect: non-scaling-stroke;
+}
+
+.route-map-route {
+  cursor: pointer;
+}
+
+.route-map-route.is-selected .route-map-flow {
+  opacity: 0.92;
+  stroke-width: 2.2;
+}
+
+.route-map-route.is-muted .route-map-flow {
+  opacity: 0.26;
+  stroke-width: 1.15;
+}
+
+.route-map-route:hover .route-map-flow {
+  opacity: 1;
+  stroke-width: 2.8;
+}
+
+.route-map-node circle {
+  fill: currentColor;
+  stroke: var(--bg-soft);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.route-map-route.is-muted .route-map-node circle {
+  opacity: 0.34;
+}
+
+.route-map-route.is-selected .route-map-node circle {
+  opacity: 0.92;
+}
+
+.route-map-node.is-current circle {
+  stroke: var(--semantic-risk);
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 4px rgba(185, 108, 84, 0.32));
+}
+
+.route-map-node text {
+  fill: var(--text-secondary);
+  font-size: 9px;
+  font-weight: var(--font-weight-medium);
+  paint-order: stroke;
+  stroke: rgba(251, 250, 246, 0.86);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.route-map-svg.is-expanded .route-map-node text {
+  font-size: 11px;
+}
+
+@keyframes route-flow-forward {
+  from {
+    stroke-dashoffset: 28;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes route-segment-reveal {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 34;
+  }
+
+  to {
+    opacity: 0.96;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes route-segment-muted-reveal {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 34;
+  }
+
+  to {
+    opacity: 0.22;
+    stroke-dashoffset: 0;
+  }
+}
+
+.route-map-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--font-caption);
+  line-height: var(--line-height-normal);
+}
+
+.route-map-meta span {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 8px;
+}
+
+.route-map-meta i {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-round);
+}
+
+.route-map-expanded[hidden] {
+  display: none;
+}
+
+.route-map-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 54px);
+}
+
+.route-map-expanded-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(47, 42, 38, 0.2);
+  backdrop-filter: blur(4px);
+}
+
+.route-map-expanded-panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  width: min(1060px, 94vw);
+  max-height: min(780px, 90vh);
+  padding: var(--space-4);
+  background: rgba(249, 248, 244, 0.96);
+  border: 1px solid var(--line-normal);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(47, 42, 38, 0.18);
+}
+
+.route-map-expanded-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.route-map-collapse-button {
+  width: auto;
+  min-width: 58px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.route-map-expanded-stage {
+  min-height: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 58% 42%, rgba(255, 255, 255, 0.82), transparent 54%),
+    linear-gradient(rgba(214, 208, 199, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 208, 199, 0.09) 1px, transparent 1px),
+    rgba(251, 250, 246, 0.84);
+  background-size:
+    auto,
+    30px 30px,
+    30px 30px,
+    auto;
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.route-map-expanded-stage .route-map-svg {
+  width: 100%;
+  height: min(62vh, 620px);
+  min-height: 520px;
+}
+
+.map-placeholder::before {
+  position: absolute;
+  inset: 40px 34px 52px;
+  content: "";
+  border: 1px solid var(--line-normal);
+  border-radius: 48% 44% 46% 52%;
+  transform: rotate(-8deg);
+}
+
+.map-placeholder::after {
+  position: absolute;
+  inset: 96px 48px 78px 62px;
+  content: "";
+  border-top: 2px solid var(--semantic-route);
+  border-radius: 999px;
+  transform: rotate(-22deg);
+  opacity: 0.72;
+}
+
+.rhythm-placeholder {
+  min-height: 560px;
+  padding: var(--space-4);
+}
+
+.route-rhythm-workspace {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.rhythm-summary-strip,
+.route-rhythm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--font-caption);
+}
+
+.rhythm-summary-strip span:first-child {
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.route-rhythm-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  background:
+    linear-gradient(rgba(214, 208, 199, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 208, 199, 0.16) 1px, transparent 1px),
+    rgba(251, 250, 246, 0.62);
+  background-size: 28px 28px;
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.route-rhythm-chart {
+  min-width: 980px;
+  min-height: 560px;
+}
+
+.route-rhythm-chart svg {
+  display: block;
+  width: 100%;
+  min-height: 560px;
+}
+
+.route-rhythm-chart.is-hovering .rhythm-node-group:not(.is-hovered) {
+  opacity: 0.42;
+}
+
+.route-rhythm-chart.is-hovering .rhythm-link:not(.is-linked) {
+  opacity: 0.22;
+}
+
+.route-rhythm-legend {
+  justify-content: flex-start;
+}
+
+.route-rhythm-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 24px;
+  border-top: 2px solid #c0c0c0;
+}
+
+.legend-line.l2 {
+  border-color: #909090;
+  border-top-width: 4px;
+}
+
+.legend-line.l3 {
+  border-color: #66bb6a;
+}
+
+.legend-line.l4 {
+  border-color: #757575;
+}
+
+.legend-line.l5 {
+  border-color: #212121;
+  border-top-width: 3px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-round);
+}
+
+.legend-dot.risk {
+  background: var(--semantic-risk);
+}
+
+.legend-dot.pollination {
+  background: var(--semantic-weather);
+}
+
+.legend-dot.profit {
+  background: var(--semantic-route);
+}
+
+.legend-band {
+  display: inline-block;
+  width: 24px;
+  height: 10px;
+  border: 1px dashed var(--semantic-weather);
+  background: rgba(141, 191, 193, 0.14);
+  border-radius: 2px;
+}
+
+.legend-line.climate {
+  border-color: var(--semantic-risk);
+  border-top-style: dashed;
+}
+
+.rhythm-svg text {
+  font-family: var(--font-family-base);
+  letter-spacing: 0;
+}
+
+.rhythm-column-title {
+  fill: var(--text-primary);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.rhythm-column-subtitle {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.rhythm-axis-text {
+  fill: var(--text-muted);
+  font-size: 10px;
+}
+
+.rhythm-row-text {
+  fill: var(--text-secondary);
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+}
+
+.rhythm-row-line,
+.rhythm-month-line {
+  stroke: var(--line-subtle);
+  stroke-width: 1;
+}
+
+.rhythm-link {
+  fill: none;
+  stroke: #c0c0c0;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    opacity 160ms ease,
+    stroke 160ms ease,
+    stroke-width 160ms ease;
+}
+
+.rhythm-link.is-linked {
+  stroke: var(--text-secondary);
+  stroke-width: 1.6;
+  opacity: 0.84;
+}
+
+.rhythm-node-group {
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.rhythm-node-group.is-hovered .route-node-core {
+  filter: drop-shadow(0 4px 10px rgba(47, 42, 38, 0.18));
+  stroke-width: 2.6;
+}
+
+.rhythm-node-group.is-selected .route-node-core {
+  stroke: #4f83a3;
+  stroke-width: 3;
+}
+
+.route-node-hit {
+  cursor: pointer;
+  fill: transparent;
+  pointer-events: all;
+}
+
+.route-node-core {
+  fill: var(--bg-soft);
+  stroke: var(--text-primary);
+  stroke-width: 1.6;
+}
+
+.route-node-label {
+  fill: var(--text-primary);
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  pointer-events: none;
+}
+
+.route-node-subtitle {
+  fill: var(--text-muted);
+  font-size: 9px;
+  pointer-events: none;
+}
+
+.route-layer-l2 {
+  fill: none;
+  stroke: #909090;
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.68;
+}
+
+.route-layer-l3 {
+  stroke: #66bb6a;
+  stroke-linecap: round;
+}
+
+.route-layer-l3.is-fair {
+  stroke: #9abf74;
+  opacity: 0.72;
+}
+
+.route-layer-l3.is-interrupted {
+  stroke: rgba(185, 108, 84, 0.44);
+  stroke-dasharray: 2 3;
+}
+
+.route-layer-l4 {
+  stroke: #757575;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.76;
+}
+
+.route-layer-l4.is-grade-one {
+  stroke: rgba(216, 140, 82, 0.88);
+}
+
+.route-layer-l4.is-grade-two {
+  stroke: rgba(141, 191, 193, 0.9);
+}
+
+.route-layer-l4.is-grade-three {
+  stroke: rgba(185, 108, 84, 0.72);
+}
+
+.route-flower-peak {
+  fill: #757575;
+  opacity: 0.84;
+}
+
+.route-flower-label {
+  fill: var(--text-muted);
+  font-size: 8px;
+}
+
+.route-layer-l5 {
+  stroke: #212121;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.route-buffer-band {
+  fill: rgba(141, 191, 193, 0.12);
+  stroke: rgba(141, 191, 193, 0.2);
+  stroke-width: 0.4;
+}
+
+.route-buffer-band.is-after {
+  fill: rgba(216, 140, 82, 0.1);
+  stroke: rgba(216, 140, 82, 0.18);
+}
+
+.route-good-day-mark {
+  fill: rgba(102, 187, 106, 0.72);
+}
+
+.route-rain-mark {
+  stroke: rgba(79, 131, 163, 0.76);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+
+.route-risk-band {
+  fill: rgba(185, 108, 84, 0.18);
+  stroke: rgba(185, 108, 84, 0.28);
+  stroke-width: 0.6;
+}
+
+.route-risk-dot {
+  fill: var(--semantic-risk);
+  stroke: var(--bg-soft);
+  stroke-width: 1;
+}
+
+.route-risk-label {
+  fill: var(--semantic-risk);
+  font-size: 8px;
+  font-weight: var(--font-weight-medium);
+}
+
+.route-pollination-mark rect {
+  fill: rgba(141, 191, 193, 0.2);
+  stroke: rgba(141, 191, 193, 0.72);
+  stroke-width: 1;
+}
+
+.route-pollination-mark text {
+  fill: var(--text-secondary);
+  font-size: 9px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.route-climate-mark line {
+  stroke: var(--semantic-risk);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 3;
+}
+
+.route-climate-mark text {
+  fill: var(--semantic-risk);
+  font-size: 8px;
+}
+
+.route-profit-mark rect {
+  fill: rgba(216, 140, 82, 0.14);
+  stroke: rgba(216, 140, 82, 0.58);
+  stroke-width: 1;
+}
+
+.route-profit-mark text {
+  fill: var(--text-secondary);
+  font-size: 8px;
+  font-weight: var(--font-weight-medium);
+}
+
+.route-node-badge {
+  fill: var(--bg-soft);
+  stroke: var(--line-normal);
+  stroke-width: 1;
+}
+
+.route-node-badge-text {
+  fill: var(--text-secondary);
+  font-size: 9px;
+  font-weight: var(--font-weight-medium);
+}
+
+.route-node-caveat {
+  fill: var(--semantic-risk);
+  font-size: 8px;
+  font-weight: var(--font-weight-medium);
+}
+
+.rhythm-detail-panel {
+  overflow: hidden;
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.rhythm-detail-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.rhythm-detail-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-title-md);
+}
+
+.rhythm-detail-meta {
+  color: var(--text-muted);
+  font-size: var(--font-caption);
+}
+
+.weather-day-strip {
+  display: grid;
+  grid-auto-columns: 72px;
+  grid-auto-flow: column;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: var(--space-3) 0;
+}
+
+.weather-day-card {
+  display: grid;
+  gap: 5px;
+  min-height: 138px;
+  padding: var(--space-2);
+  color: var(--text-secondary);
+  background: rgba(251, 250, 246, 0.74);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-micro);
+  line-height: 1.25;
+}
+
+.weather-day-card.is-risk {
+  border-color: rgba(185, 108, 84, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(185, 108, 84, 0.12);
+}
+
+.weather-nwi-bar {
+  height: 28px;
+  border-radius: 2px;
+}
+
+.weather-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.weather-summary-grid span {
+  padding: var(--space-2);
+  color: var(--text-secondary);
+  background: rgba(251, 250, 246, 0.66);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-caption);
+}
+
+.era-weather-comparison {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.era-weather-comparison span {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-caption);
+}
+
+.era-weather-comparison i {
+  display: block;
+  height: 7px;
+  background: var(--semantic-weather);
+  border-radius: var(--radius-round);
+}
+
+.era-weather-comparison em {
+  color: var(--text-muted);
+  font-style: normal;
+}
+
+.pollination-detail-note,
+.data-caveat-note {
+  display: grid;
+  gap: 4px;
+  margin-top: var(--space-3);
+  padding: var(--space-2);
+  color: var(--text-secondary);
+  background: rgba(251, 250, 246, 0.72);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-caption);
+  line-height: var(--line-height-normal);
+}
+
+.pollination-detail-note small,
+.data-caveat-note {
+  color: var(--text-muted);
+}
+
+.rhythm-reading-note {
+  margin: var(--space-3) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-body-sm);
+  line-height: var(--line-height-normal);
+}
+
+.rhythm-axis {
+  display: grid;
+  grid-template-columns: 120px repeat(12, 1fr);
+  gap: 0;
+  height: 100%;
+}
+
+.rhythm-axis-label,
+.rhythm-month {
+  min-height: 28px;
+  color: var(--text-muted);
+  font-size: var(--font-caption);
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.rhythm-row-label {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--text-secondary);
+  font-size: var(--font-body-sm);
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.rhythm-cell {
+  min-height: 48px;
+  border-bottom: 1px solid var(--line-subtle);
+  border-left: 1px solid rgba(230, 225, 216, 0.54);
+}
+
+.rhythm-node {
+  height: 22px;
+  margin: 13px 4px;
+  background: rgba(229, 165, 111, 0.28);
+  border: 1px solid rgba(216, 140, 82, 0.62);
+  border-radius: var(--radius-round);
+}
+
+.rhythm-node.is-weather {
+  background: rgba(141, 191, 193, 0.34);
+  border-color: rgba(141, 191, 193, 0.58);
+}
+
+.chart-placeholder {
+  min-height: 150px;
+  padding: var(--space-3);
+}
+
+.mini-line {
+  width: 100%;
+  height: 86px;
+}
+
+.mini-line path {
+  fill: none;
+  stroke: var(--semantic-route);
+  stroke-width: 1.2;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.metric-card {
+  min-height: 76px;
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.metric-value {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--text-primary);
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.weather-detail-placeholder {
+  width: 680px;
+  min-height: 180px;
+  padding: var(--space-4);
+  pointer-events: auto;
+}

@@ -1,0 +1,109 @@
+.app-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  width: min(100vw, 1720px);
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  margin: 0 auto;
+  padding: var(--space-4);
+  overflow: hidden;
+}
+
+.app-region {
+  min-width: 0;
+}
+
+.app-region-top,
+.app-region-bottom {
+  background: rgba(249, 248, 244, 0.72);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-md);
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 18vw) minmax(560px, 1fr) minmax(320px, 24vw);
+  gap: var(--space-4);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-region-left,
+.app-region-main,
+.app-region-right {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: rgba(249, 248, 244, 0.76);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-md);
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.panel-body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-4);
+}
+
+.app-region-left .panel-body,
+.app-region-main .panel-body,
+.app-region-right .panel-body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--line-normal) transparent;
+  scrollbar-width: thin;
+}
+
+.panel-stack {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.floating-layer {
+  position: fixed;
+  inset: auto var(--space-4) var(--space-4) auto;
+  z-index: 20;
+  pointer-events: none;
+}
+
+@media (max-width: 1280px) {
+  html,
+  body {
+    min-width: 1080px;
+  }
+
+  .app-grid {
+    grid-template-columns: 220px minmax(520px, 1fr) 300px;
+  }
+}
+
+@media (max-height: 820px) {
+  .app-shell {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .panel-header,
+  .panel-body {
+    padding: var(--space-3);
+  }
+}

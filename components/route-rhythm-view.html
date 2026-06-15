@@ -1,0 +1,50 @@
+<section class="panel" data-window="route-rhythm-view" aria-label="路径节律主视图">
+  <header class="panel-header">
+    <div>
+      <span class="eyebrow">View 02 · Primary</span>
+      <h2 class="panel-title">路径节律主视图</h2>
+      <p class="placeholder-copy">时间轴 × 纬度轴的五层窗口线束，显示停留、花期、天气与有效采蜜窗口的错位关系。</p>
+    </div>
+
+    <div class="layer-toggle-list" aria-label="信息层开关">
+      <button class="layer-toggle" type="button" aria-pressed="true" data-layer="route">路线</button>
+      <button class="layer-toggle" type="button" aria-pressed="true" data-layer="flowering">花期</button>
+      <button class="layer-toggle" type="button" aria-pressed="true" data-layer="weather">天气</button>
+      <button class="layer-toggle" type="button" aria-pressed="false" data-layer="risk">风险</button>
+      <button class="layer-toggle" type="button" aria-pressed="false" data-layer="buffer">缓冲</button>
+      <button class="layer-toggle" type="button" aria-pressed="false" data-layer="pollination">授粉</button>
+      <button class="layer-toggle" type="button" aria-pressed="false" data-layer="climate">气候</button>
+      <button class="layer-toggle" type="button" aria-pressed="false" data-layer="profit">收益</button>
+    </div>
+  </header>
+
+  <div class="panel-body">
+    <div class="route-rhythm-workspace">
+      <div class="rhythm-summary-strip">
+        <span data-rhythm-route-title>东线（沿海线） · 2020s</span>
+        <span data-rhythm-mode-note>单路线分析 · 全年路线</span>
+      </div>
+
+      <div class="route-rhythm-scroll">
+        <div class="route-rhythm-chart" data-route-rhythm-chart>
+          <div class="panel-loading">正在载入路径节律数据...</div>
+        </div>
+      </div>
+
+      <div class="route-rhythm-legend" aria-label="路径节律图例">
+        <span><i class="legend-line l1"></i>L1 地点基线</span>
+        <span><i class="legend-line l2"></i>L2 蜂农停留</span>
+        <span><i class="legend-line l3"></i>L3 天气适宜</span>
+        <span><i class="legend-line l4"></i>L4 节点花期</span>
+        <span><i class="legend-line l5"></i>L5 有效窗口</span>
+        <span><i class="legend-dot risk"></i>风险中断</span>
+        <span><i class="legend-band buffer"></i>缓冲期</span>
+        <span><i class="legend-dot pollination"></i>授粉案例</span>
+        <span><i class="legend-line climate"></i>气候花期偏移</span>
+        <span><i class="legend-dot profit"></i>模式利润参考</span>
+      </div>
+
+      <section class="rhythm-detail-panel" data-rhythm-detail-panel hidden></section>
+    </div>
+  </div>
+</section>
