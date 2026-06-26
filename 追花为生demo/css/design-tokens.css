@@ -1,0 +1,97 @@
+:root {
+  --bg-page: #f7f6f2;
+  --bg-canvas: #f9f8f4;
+  --bg-panel: #f3f1eb;
+  --bg-soft: #fbfaf6;
+
+  --text-primary: #2f2a26;
+  --text-secondary: #5e5751;
+  --text-muted: #8e877f;
+  --text-faint: #b5ada3;
+
+  --line-subtle: #e6e1d8;
+  --line-normal: #d6d0c7;
+  --line-strong: #beb7ae;
+  --line-faint-blue: #cfe3e1;
+  --line-faint-orange: #f3dec2;
+
+  --color-main-1: #d88c52;
+  --color-main-2: #e5a56f;
+  --color-main-3: #efc18f;
+  --color-main-4: #f3dec2;
+
+  --color-accent-1: #8dbfc1;
+  --color-accent-2: #a9d0d0;
+  --color-accent-3: #cfe3e1;
+
+  --color-neutral-1: #c8b8a6;
+  --color-neutral-2: #d9cec1;
+  --color-neutral-3: #eae3d9;
+
+  --color-risk: #b96c54;
+  --color-warning: #c89a5b;
+  --color-good: #8fae8e;
+
+  --semantic-route: #d88c52;
+  --semantic-route-soft: #f3dec2;
+  --semantic-time: #c8b8a6;
+  --semantic-location: #2f2a26;
+  --semantic-nectar: #d88c52;
+  --semantic-bloom: #e5a56f;
+  --semantic-bloom-soft: #f3dec2;
+  --semantic-weather: #8dbfc1;
+  --semantic-rainfall: #a9d0d0;
+  --semantic-weather-soft: #cfe3e1;
+  --semantic-risk: #b96c54;
+  --semantic-warning: #c89a5b;
+  --semantic-positive: #8fae8e;
+  --semantic-muted-data: #d9cec1;
+
+  --font-family-display: "Cormorant Garamond", "Times New Roman", "Source Han Serif SC",
+    "Noto Serif SC", "Songti SC", serif;
+  --font-family-base: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
+
+  --font-display-xl: 56px;
+  --font-display-lg: 38px;
+  --font-display-md: 28px;
+  --font-title-lg: 20px;
+  --font-title-md: 16px;
+  --font-body-md: 13px;
+  --font-body-sm: 11px;
+  --font-caption: 10px;
+  --font-micro: 9px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-display: 0.98;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.45;
+  --line-height-loose: 1.65;
+
+  --letter-spacing-display: 0;
+  --letter-spacing-title: 0;
+  --letter-spacing-body: 0;
+  --letter-spacing-caption: 0;
+
+  --stroke-hairline: 0.75px;
+  --stroke-thin: 1px;
+  --stroke-normal: 1.4px;
+  --stroke-strong: 2px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-round: 999px;
+
+  --shadow-tooltip: 0 8px 24px rgba(47, 42, 38, 0.08);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+}

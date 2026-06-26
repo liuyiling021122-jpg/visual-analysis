@@ -10,6 +10,7 @@ export const dataFiles = {
   profitByMode: `${DATA_ROOT}/beekeeper_profit_by_mode.csv`,
   finance: `${DATA_ROOT}/beekeeper_finance_detail.csv`,
   industryLatest: `${DATA_ROOT}/china_bee_industry_latest.csv`,
+  beeProductAnnual: `${DATA_ROOT}/bee_product_national_annual.csv`,
   pesticide: `${DATA_ROOT}/pesticide_use_2000_2023.csv`,
   pollination: `${DATA_ROOT}/pollination_service_market.csv`,
   climateFactors: `${DATA_ROOT}/climate_factors_province_2000_2023.csv`,
@@ -35,17 +36,17 @@ export async function loadJson(path) {
 }
 
 export async function loadLivelihoodData() {
-  const [profitByMode, finance, industryLatest, pesticide, routeSegmentSummary, climateFactors, provinceAnnual] = await Promise.all([
+  const [profitByMode, finance, beeProductAnnual, pesticide, routeSegmentSummary, climateFactors, provinceAnnual] = await Promise.all([
     loadCsv(dataFiles.profitByMode),
     loadCsv(dataFiles.finance),
-    loadCsv(dataFiles.industryLatest),
+    loadCsv(dataFiles.beeProductAnnual),
     loadCsv(dataFiles.pesticide),
     loadCsv(dataFiles.routeSegmentSummary),
     loadCsv(dataFiles.climateFactors),
     loadCsv(dataFiles.provinceAnnual),
   ]);
 
-  return { profitByMode, finance, industryLatest, pesticide, routeSegmentSummary, climateFactors, provinceAnnual };
+  return { profitByMode, finance, beeProductAnnual, pesticide, routeSegmentSummary, climateFactors, provinceAnnual };
 }
 
 export async function loadMigrationRoutes() {

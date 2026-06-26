@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>路线风险变化可视化方案预览</title>
+    <style>
+      :root {
+        --paper: #f7f5ef;
+        --card: rgba(255, 255, 255, 0.66);
+        --ink: #302a25;
+        --muted: #8b8279;
+        --line: #ded8ce;
+        --orange: #d8894e;
+        --risk: #b96750;
+        --blue: #83babe;
+        --green: #8bab8b;
+        --gold: #c79753;
+        --shadow: 0 14px 40px rgba(66, 50, 36, 0.06);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          linear-gradient(rgba(218, 210, 199, 0.2) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(218, 210, 199, 0.16) 1px, transparent 1px),
+          var(--paper);
+        background-size: 32px 32px;
+        font-family: Inter, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      }
+
+      button { font: inherit; }
+      .page { width: min(1440px, calc(100% - 40px)); margin: 0 auto; padding: 28px 0 60px; }
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 28px;
+        align-items: end;
+        padding: 28px 32px;
+        background: rgba(250, 249, 245, 0.88);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+      }
+      .eyebrow { color: var(--orange); font-family: Georgia, serif; font-size: 12px; letter-spacing: 0.08em; }
+      h1 { margin: 8px 0 10px; font-family: Georgia, "Noto Serif SC", serif; font-size: clamp(30px, 4vw, 52px); line-height: 1; }
+      .hero p { max-width: 760px; margin: 0; color: #6c645d; line-height: 1.7; }
+      .hero-note { padding: 12px 16px; border-left: 2px solid var(--orange); color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+      .nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+      .nav a {
+        padding: 8px 12px;
+        color: #655d56;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 12px;
+        text-decoration: none;
+      }
+      .nav a:hover { color: var(--ink); border-color: #bdb4aa; }
+
+      .dashboard { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .viz-card {
+        min-width: 0;
+        padding: 22px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+      .viz-card.wide { grid-column: 1 / -1; }
+      .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+      .option { display: block; margin-bottom: 5px; color: var(--orange); font: 11px Georgia, serif; letter-spacing: 0.08em; }
+      h2 { margin: 0 0 6px; font: 600 21px Georgia, "Noto Serif SC", serif; }
+      .card-head p, .footnote { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+      .recommend { flex: 0 0 auto; padding: 5px 8px; color: #7d4d2f; background: #f4dfc8; border-radius: 999px; font-size: 10px; }
+
+      .matrix {
+        display: grid;
+        grid-template-columns: 78px repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .matrix-label { display: grid; place-items: center; min-height: 32px; color: var(--muted); font-size: 11px; }
+      .matrix-route { justify-items: start; color: var(--ink); font-weight: 600; }
+      .matrix-cell {
+        position: relative;
+        min-height: 96px;
+        padding: 10px;
+        overflow: hidden;
+        border: 1px solid rgba(87, 67, 52, 0.08);
+        border-radius: 7px;
+        transition: 180ms ease;
+      }
+      .matrix-cell:hover { transform: translateY(-2px); border-color: rgba(47, 42, 38, 0.45); }
+      .matrix-value { font: 700 20px Georgia, serif; }
+      .matrix-delta { float: right; font-size: 11px; font-weight: 700; }
+      .matrix-delta.up { color: #843e2e; }
+      .matrix-delta.down { color: #376f73; }
+      .matrix-meta { display: flex; justify-content: space-between; margin-top: 12px; font-size: 10px; }
+      .harvest-track { height: 5px; margin-top: 6px; overflow: hidden; background: rgba(255,255,255,.42); border-radius: 99px; }
+      .harvest-track i { display: block; height: 100%; background: rgba(255,255,255,.9); border-radius: inherit; }
+
+      .risk-bands { display: grid; gap: 12px; }
+      .risk-band-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: stretch; gap: 10px; }
+      .risk-band-name { display: grid; align-items: center; font-size: 12px; font-weight: 600; }
+      .risk-band { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; overflow: hidden; border-radius: 7px; }
+      .risk-band-segment { position: relative; min-height: 78px; padding: 10px; transition: 180ms ease; }
+      .risk-band-segment:hover { filter: saturate(1.15); }
+      .risk-band-segment span { display: block; font-size: 10px; opacity: .8; }
+      .risk-band-segment strong { display: block; margin-top: 5px; font: 700 18px Georgia, serif; }
+      .risk-band-segment i { position: absolute; left: 0; bottom: 0; height: 6px; background: var(--blue); }
+
+      .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }
+      .grid-line { stroke: #ded8ce; stroke-width: 1; }
+      .axis-text { fill: #8b8279; font-size: 10px; }
+      .route-text { fill: #302a25; font-size: 11px; font-weight: 600; }
+      .delta-text { font-size: 10px; font-weight: 700; }
+      .dumbbell-link { stroke: #c9c0b6; stroke-width: 3; stroke-linecap: round; }
+      .rank-link { fill: none; stroke-width: 2.2; opacity: .76; }
+
+      .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; color: var(--muted); font-size: 10px; }
+      .legend span { display: inline-flex; align-items: center; gap: 5px; }
+      .legend i { width: 8px; height: 8px; border-radius: 99px; }
+      .gradient-key { width: 72px !important; height: 6px !important; background: linear-gradient(90deg, var(--blue), #f0d6b7, var(--risk)); }
+
+      [data-route] { transition: opacity 160ms ease, filter 160ms ease, transform 160ms ease; }
+      body.has-route-focus [data-route]:not(.is-route-active) { opacity: .18; filter: grayscale(.65); }
+
+      .conclusion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+      .conclusion-grid div { padding: 11px; background: rgba(255,255,255,.42); border: 1px solid var(--line); border-radius: 6px; }
+      .conclusion-grid strong { display: block; margin-bottom: 4px; font-size: 12px; }
+      .conclusion-grid span { color: var(--muted); font-size: 10px; line-height: 1.5; }
+
+      .tooltip {
+        position: fixed;
+        z-index: 10;
+        max-width: 240px;
+        padding: 9px 11px;
+        pointer-events: none;
+        color: #fff;
+        background: rgba(47, 42, 38, .92);
+        border-radius: 5px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.12);
+        font-size: 11px;
+        line-height: 1.55;
+        white-space: pre-line;
+      }
+
+      @media (max-width: 900px) {
+        .page { width: min(100% - 24px, 720px); }
+        .hero, .dashboard { grid-template-columns: 1fr; }
+        .viz-card.wide { grid-column: auto; }
+        .conclusion-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div>
+          <span class="eyebrow">ROUTE RISK VISUAL STUDY · INDEPENDENT PROTOTYPE</span>
+          <h1>四条迁徙路线的风险变化</h1>
+          <p>使用同一组四路线、三年代数据，比较五种非传统折线表达。悬停任意路线，会在全部方案中同步突出该路线。</p>
+        </div>
+        <div class="hero-note">数据：route_segment_summary.csv<br />代表年份：1985 / 2005 / 2024<br />风险值：0 低风险，1 高风险</div>
+      </header>
+
+      <nav class="nav">
+        <a href="#matrix">01 增强热力矩阵</a><a href="#bands">02 路线风险带</a><a href="#dumbbell">03 哑铃对比</a><a href="#bubble">04 气泡矩阵</a><a href="#ranking">05 排名变化</a>
+      </nav>
+
+      <section class="dashboard">
+        <article class="viz-card wide" id="matrix">
+          <header class="card-head"><div><span class="option">OPTION 01</span><h2>增强型热力矩阵</h2><p>底色表示风险，白色短条表示有效采蜜率，箭头表示相较上一年代的变化。</p></div><span class="recommend">信息最完整 · 推荐</span></header>
+          <div class="matrix" data-matrix></div>
+          <div class="legend"><span><i style="background:#f0ddd3"></i>低风险</span><span><i style="background:#b96750"></i>高风险</span><span><i style="background:#fff;border:1px solid #ccc"></i>有效采蜜率</span></div>
+        </article>
+
+        <article class="viz-card wide" id="bands">
+          <header class="card-head"><div><span class="option">OPTION 02</span><h2>路线风险带</h2><p>每条横带保持一条路线的连续叙事，底部蓝条表示有效采蜜率。</p></div><span class="recommend">叙事性强</span></header>
+          <div class="risk-bands" data-bands></div>
+        </article>
+
+        <article class="viz-card" id="dumbbell">
+          <header class="card-head"><div><span class="option">OPTION 03</span><h2>哑铃对比图</h2><p>聚焦1980s与2020s端点，直接显示风险净变化。</p></div><span class="recommend">结论最快</span></header>
+          <svg class="chart-svg" data-dumbbell viewBox="0 0 620 290" aria-label="路线风险哑铃对比图"></svg>
+          <p class="footnote">适合回答“风险最终升了还是降了”，但2000s只作为背景信息。</p>
+        </article>
+
+        <article class="viz-card" id="bubble">
+          <header class="card-head"><div><span class="option">OPTION 04</span><h2>气泡矩阵</h2><p>气泡大小表示风险，颜色表示采蜜率，外环粗细表示连续恶劣天气。</p></div><span class="recommend">多指标</span></header>
+          <svg class="chart-svg" data-bubble viewBox="0 0 620 290" aria-label="路线风险气泡矩阵"></svg>
+          <div class="legend"><span><i class="gradient-key"></i>采蜜率：低 → 高</span><span>○ 大小：风险</span><span>◎ 外环：恶劣天气</span></div>
+        </article>
+
+        <article class="viz-card wide" id="ranking">
+          <header class="card-head"><div><span class="option">OPTION 05</span><h2>路线风险排名变化</h2><p>只看相对位置，强调风险重心在路线之间如何转移。</p></div><span class="recommend">适合讲格局变化</span></header>
+          <svg class="chart-svg" data-ranking viewBox="0 0 1160 310" aria-label="路线风险排名变化图"></svg>
+          <div class="conclusion-grid" data-conclusions></div>
+        </article>
+      </section>
+    </main>
+    <div class="tooltip" data-tooltip hidden></div>
+
+    <script>
+      const eras = ['1980s', '2000s', '2020s'];
+      const routes = [
+        { id: 'east', name: '东线', full: '东线（沿海线）', color: '#b96750', values: [
+          { risk: .723, good: .560, bad: 7.1, nwi: 74.6 }, { risk: .661, good: .584, bad: 6.1, nwi: 76.7 }, { risk: .765, good: .515, bad: 5.5, nwi: 74.1 }
+        ]},
+        { id: 'central', name: '中线', full: '中线（京广线）', color: '#c79753', values: [
+          { risk: .608, good: .617, bad: 6.4, nwi: 62.3 }, { risk: .586, good: .690, bad: 2.9, nwi: 65.2 }, { risk: .678, good: .578, bad: 4.9, nwi: 63.9 }
+        ]},
+        { id: 'west', name: '西线', full: '西线（西北线）', color: '#6fa8ad', values: [
+          { risk: .673, good: .525, bad: 6.7, nwi: 61.6 }, { risk: .660, good: .527, bad: 11.0, nwi: 61.2 }, { risk: .601, good: .589, bad: 6.1, nwi: 63.6 }
+        ]},
+        { id: 'south', name: '南线', full: '南线', color: '#8bab8b', values: [
+          { risk: .167, good: .273, bad: 3.2, nwi: 10.0 }, { risk: .167, good: .429, bad: .8, nwi: 10.3 }, { risk: .167, good: .476, bad: 2.8, nwi: 11.3 }
+        ]}
+      ];
+
+      const riskBackground = value => `rgba(185, 103, 80, ${(.08 + value * .72).toFixed(2)})`;
+      const detail = (route, eraIndex) => {
+        const v = route.values[eraIndex];
+        return `${route.full} · ${eras[eraIndex]}\n风险指数 ${v.risk.toFixed(3)}\n有效采蜜率 ${(v.good * 100).toFixed(1)}%\n平均最长恶劣天气 ${v.bad.toFixed(1)} 天\n平均 NWI ${v.nwi.toFixed(1)}`;
+      };
+
+      function renderMatrix() {
+        const root = document.querySelector('[data-matrix]');
+        root.innerHTML = `<span></span>${eras.map(era => `<strong class="matrix-label">${era}</strong>`).join('')}` + routes.map(route => `
+          <strong class="matrix-label matrix-route" data-route="${route.id}">${route.name}</strong>
+          ${route.values.map((v, index) => {
+            const delta = index ? v.risk - route.values[index - 1].risk : null;
+            const arrow = delta == null ? '基期' : `${delta > .002 ? '↑' : delta < -.002 ? '↓' : '→'} ${Math.abs(delta).toFixed(2)}`;
+            const tone = delta > .002 ? 'up' : delta < -.002 ? 'down' : '';
+            return `<div class="matrix-cell" data-route="${route.id}" data-tip="${detail(route, index)}" style="background:${riskBackground(v.risk)}">
+              <span class="matrix-value">${v.risk.toFixed(2)}</span><span class="matrix-delta ${tone}">${arrow}</span>
+              <div class="matrix-meta"><span>采蜜率</span><strong>${(v.good * 100).toFixed(0)}%</strong></div>
+              <div class="harvest-track"><i style="width:${v.good * 100}%"></i></div>
+            </div>`;
+          }).join('')}
+        `).join('');
+      }
+
+      function renderBands() {
+        document.querySelector('[data-bands]').innerHTML = routes.map(route => `
+          <div class="risk-band-row" data-route="${route.id}">
+            <span class="risk-band-name">${route.name}</span>
+            <div class="risk-band">${route.values.map((v, index) => `<div class="risk-band-segment" data-tip="${detail(route, index)}" style="background:${riskBackground(v.risk)}">
+              <span>${eras[index]}</span><strong>${v.risk.toFixed(2)}</strong><i style="width:${v.good * 100}%"></i>
+            </div>`).join('')}</div>
+          </div>`).join('');
+      }
+
+      function renderDumbbell() {
+        const svg = document.querySelector('[data-dumbbell]');
+        const left = 116, right = 565, top = 62, rowGap = 52;
+        const x = value => left + value * (right - left);
+        svg.innerHTML = `
+          ${[0, .25, .5, .75, 1].map(v => `<line class="grid-line" x1="${x(v)}" x2="${x(v)}" y1="35" y2="252"></line><text class="axis-text" x="${x(v)}" y="276" text-anchor="middle">${v.toFixed(2)}</text>`).join('')}
+          <text class="axis-text" x="${left}" y="20">低风险</text><text class="axis-text" x="${right}" y="20" text-anchor="end">高风险</text>
+          ${routes.map((route, index) => {
+            const y = top + index * rowGap, start = route.values[0].risk, end = route.values[2].risk, delta = end - start;
+            return `<g data-route="${route.id}">
+              <text class="route-text" x="10" y="${y + 4}">${route.name}</text>
+              <line class="dumbbell-link" x1="${x(start)}" x2="${x(end)}" y1="${y}" y2="${y}"></line>
+              <circle cx="${x(start)}" cy="${y}" r="8" fill="#f7f5ef" stroke="${route.color}" stroke-width="2" data-tip="${detail(route, 0)}"></circle>
+              <circle cx="${x(end)}" cy="${y}" r="9" fill="${route.color}" data-tip="${detail(route, 2)}"></circle>
+              <text class="delta-text" x="${Math.max(x(start), x(end)) + 14}" y="${y + 4}" fill="${delta > 0 ? '#944934' : delta < 0 ? '#39787b' : '#8b8279'}">${delta > 0 ? '+' : ''}${delta.toFixed(3)}</text>
+            </g>`;
+          }).join('')}`;
+      }
+
+      function renderBubble() {
+        const svg = document.querySelector('[data-bubble]');
+        const xs = [225, 370, 515], ys = [65, 122, 179, 236];
+        const bubbleColor = good => {
+          const t = Math.max(0, Math.min(1, (good - .25) / .45));
+          return `color-mix(in srgb, #d79a68 ${(1-t)*100}%, #73b2b7 ${t*100}%)`;
+        };
+        svg.innerHTML = `
+          ${eras.map((era, i) => `<text class="axis-text" x="${xs[i]}" y="24" text-anchor="middle">${era}</text>`).join('')}
+          ${routes.map((route, ri) => `<g data-route="${route.id}"><text class="route-text" x="20" y="${ys[ri] + 4}">${route.name}</text>
+            ${route.values.map((v, ei) => `<circle cx="${xs[ei]}" cy="${ys[ri]}" r="${9 + v.risk * 22}" fill="${bubbleColor(v.good)}" fill-opacity=".82" stroke="${route.color}" stroke-width="${1 + v.bad / 4}" data-tip="${detail(route, ei)}"></circle>`).join('')}
+          </g>`).join('')}`;
+      }
+
+      function renderRanking() {
+        const svg = document.querySelector('[data-ranking]');
+        const xs = [185, 575, 965], ys = [70, 125, 180, 235];
+        const ranks = eras.map((_, ei) => [...routes].sort((a,b) => b.values[ei].risk - a.values[ei].risk));
+        const rankY = (route, ei) => ys[ranks[ei].findIndex(item => item.id === route.id)];
+        svg.innerHTML = `
+          ${eras.map((era, ei) => `<text class="route-text" x="${xs[ei]}" y="28" text-anchor="middle">${era}</text>${ys.map((y,i) => `<line class="grid-line" x1="${xs[ei]-75}" x2="${xs[ei]+75}" y1="${y}" y2="${y}"></line><text class="axis-text" x="${xs[ei]-85}" y="${y+4}" text-anchor="end">#${i+1}</text>`).join('')}`).join('')}
+          ${routes.map(route => {
+            const points = eras.map((_, ei) => `${xs[ei]},${rankY(route, ei)}`).join(' ');
+            return `<g data-route="${route.id}"><polyline class="rank-link" points="${points}" stroke="${route.color}"></polyline>
+              ${eras.map((_, ei) => `<circle cx="${xs[ei]}" cy="${rankY(route, ei)}" r="8" fill="${route.color}" data-tip="${detail(route, ei)}"></circle><text class="route-text" x="${xs[ei]+13}" y="${rankY(route, ei)+4}">${route.name} ${route.values[ei].risk.toFixed(2)}</text>`).join('')}
+            </g>`;
+          }).join('')}`;
+      }
+
+      function renderConclusions() {
+        document.querySelector('[data-conclusions]').innerHTML = routes.map(route => {
+          const delta = route.values[2].risk - route.values[0].risk;
+          const reading = delta > .02 ? `风险上升 ${delta.toFixed(3)}` : delta < -.02 ? `风险下降 ${Math.abs(delta).toFixed(3)}` : '风险基本稳定';
+          return `<div data-route="${route.id}"><strong style="color:${route.color}">${route.name}</strong><span>${reading}；2020s采蜜率 ${(route.values[2].good*100).toFixed(1)}%。</span></div>`;
+        }).join('');
+      }
+
+      function setupInteraction() {
+        const tooltip = document.querySelector('[data-tooltip]');
+        document.addEventListener('pointerover', event => {
+          const routeTarget = event.target.closest('[data-route]');
+          if (routeTarget) {
+            document.body.classList.add('has-route-focus');
+            document.querySelectorAll(`[data-route="${routeTarget.dataset.route}"]`).forEach(item => item.classList.add('is-route-active'));
+          }
+          const tipTarget = event.target.closest('[data-tip]');
+          if (tipTarget) { tooltip.textContent = tipTarget.dataset.tip; tooltip.hidden = false; }
+        });
+        document.addEventListener('pointermove', event => {
+          if (tooltip.hidden) return;
+          tooltip.style.left = `${Math.min(event.clientX + 14, innerWidth - tooltip.offsetWidth - 12)}px`;
+          tooltip.style.top = `${Math.min(event.clientY + 14, innerHeight - tooltip.offsetHeight - 12)}px`;
+        });
+        document.addEventListener('pointerout', event => {
+          const routeTarget = event.target.closest('[data-route]');
+          if (routeTarget && !routeTarget.contains(event.relatedTarget)) {
+            document.body.classList.remove('has-route-focus');
+            document.querySelectorAll('.is-route-active').forEach(item => item.classList.remove('is-route-active'));
+          }
+          const tipTarget = event.target.closest('[data-tip]');
+          if (tipTarget && !tipTarget.contains(event.relatedTarget)) tooltip.hidden = true;
+        });
+      }
+
+      renderMatrix(); renderBands(); renderDumbbell(); renderBubble(); renderRanking(); renderConclusions(); setupInteraction();
+    </script>
+  </body>
+</html>

@@ -394,7 +394,9 @@ function inferProvince(region) {
     '甘肃',
     '青海',
   ];
-  return provinceNames.find((province) => value.includes(province)) || '';
+  return provinceNames.find((province) => value.startsWith(province))
+    || provinceNames.find((province) => value.includes(province))
+    || '';
 }
 
 function indexClimate(rows) {
