@@ -1,12 +1,13 @@
 # Code Architecture
 
-本项目采用静态单页信息可视化系统架构。`index.html` 是唯一入口，各分析窗口由 `components/*.html` 片段组成，并由 `js/component-loader.js` 装载到同一页面中。窗口之间通过 `js/state.js` 共享状态联动。
+本项目采用静态单页信息可视化系统架构。`zhuihua-demo/index.html` 是唯一入口页面，各分析窗口由 `components/*.html` 片段组成，并由 `js/component-loader.js` 装载到同一页面中。窗口之间通过 `js/state.js` 共享状态联动。
 
 ## Page Shell
 
 | 文件 | 职责 |
 |---|---|
-| `index.html` | 大系统页面入口，只定义整体窗口槽位。 |
+| `zhuihua-demo/index.html` | 系统页面入口（花期节律螺旋主视图），定义整体布局与窗口槽位。 |
+| `index.html` | 根目录入口，自动跳转到 `zhuihua-demo/`。 |
 | `server.mjs` | 本地静态服务器，用于载入 HTML 片段和 CSV/JSON 数据。 |
 | `README.md` | 项目启动方式、数据说明和目录说明。 |
 
@@ -14,13 +15,15 @@
 
 | 文件 | 窗口 | 当前状态 |
 |---|---|---|
-| `components/top-toolbar.html` | 顶部标题、年代切换、月份窗口控制 | 已联动 `selectedEra` 与 `selectedMonthWindow`。 |
 | `components/route-map-panel.html` | 左侧路线地图选择器 | 真实中国边界 + 四条经典路线 + 节点，支持选择与当前节点反馈。 |
-| `components/route-rhythm-view.html` | 中央路径节律主视图 | 主分析视图，支持路线、花期、天气、风险、缓冲、授粉、气候层。 |
 | `components/livelihood-risk-panel.html` | 右侧生计风险解读面板 | 真实财务/行业图表 + 路线/节点联动解释。 |
-| `components/status-bar.html` | 底部系统状态栏 | 同步路线、年代、月份窗口。 |
-| `components/weather-detail-panel.html` | 节点天气详情浮层 | 保留为扩展槽位；当前详情嵌入中央视图内部。 |
 | `components/tooltip-layer.html` | 节点 hover 摘要浮层 | 已用于中央节点 tooltip。 |
+
+**以下组件为早期/备用模块，未在当前入口页面中使用：**
+- `components/top-toolbar.html`（顶部标题、年代切换、月份窗口控制）
+- `components/route-rhythm-view.html`（矩阵式路径节律视图）
+- `components/status-bar.html`（底部系统状态栏）
+- `components/weather-detail-panel.html`（节点天气详情浮层）
 
 ## Data Pipeline
 
@@ -35,12 +38,14 @@
 
 | 文件 | 职责 |
 |---|---|
-| `js/app.js` | 启动入口：载入组件，初始化各窗口和顶部工具栏。 |
-| `js/component-loader.js` | 将 `components/*.html` 装载到 `index.html` 的槽位。 |
+| `js/flowering-rhythm.js` | **启动入口：** 载入组件，初始化各窗口，加载路线定义与花期图层，渲染主视图所有标注层。 |
+| `js/component-loader.js` | 将 `components/*.html` 装载到 `zhuihua-demo/index.html` 的槽位。 |
 | `js/state.js` | 轻量全局状态：路线、年代、月份窗口、图层、当前节点。 |
 | `js/route-map-panel.js` | 左侧真实中国路线地图，承担路线发现与选择入口。 |
-| `js/route-rhythm-view.js` | 中央路径节律矩阵，承担花期-天气-停留主分析。 |
 | `js/livelihood-risk-panel.js` | 右侧财务、生计和风险解释面板。 |
+| `js/data-loader.js` | 数据加载入口，提供 CSV 解析和 JSON 加载工具函数。 |
+
+**未使用/早期模块：** `js/app.js`（原启动入口，已被 `flowering-rhythm.js` 取代）。
 
 ## Current Data Caveats
 
