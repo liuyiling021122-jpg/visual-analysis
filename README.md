@@ -40,6 +40,15 @@ Windows PowerShell 可以使用：
 $env:PORT=8080; node server.mjs
 ```
 
+## 页面入口说明
+
+本系统有两个 HTML 入口：
+
+| 入口 | 说明 |
+|---|---|
+| `zhuihua-demo/index.html` | **当前主入口**。加载花期节律螺旋主视图（`js/flowering-rhythm.js`），包含路线地图、花期螺旋、生计风险面板。 |
+| `index.html` | 根目录入口，自动跳转到 `zhuihua-demo/`。 |
+
 ## 数据加载方式
 
 数据入口集中在 `js/data-loader.js` 中，页面通过浏览器 `fetch()` 加载本地静态文件：
@@ -65,19 +74,24 @@ $env:PORT=8080; node server.mjs
 
 本系统使用相对路径引用资源，适合放在 GitHub Pages 这类静态托管环境中运行。仓库根目录的 `index.html` 会自动跳转到 `zhuihua-demo/`。
 
-如果单独部署 `zhuihua-demo/` 文件夹，需要保留以下目录结构：
+如果部署到 GitHub Pages，建议将 Source 目录设为 `zhuihua-demo/`（该文件夹已包含 `.nojekyll` 文件）。
+
+所需保留的目录结构：
 
 ```
-index.html
-server.mjs
-css/
-js/
-components/
-assets/
-project_reference/data/
+zhuihua-demo/
+├── index.html
+├── server.mjs          (仅本地预览需要，GitHub Pages 不会使用)
+├── css/
+├── js/
+├── components/
+├── assets/
+└── project_reference/data/
 ```
 
-GitHub Pages 不会使用 `server.mjs`，它只在本地预览时需要。
+根目录的 `.nojekyll` 文件供全仓库部署时使用。
+
+> **注意：** 项目中包含中文路径名（如 `中线svg/`、`南线svg/`），部署后若遇到资源加载 404，可能需要检查 URL 编码是否正常。
 
 ## GitHub 仓库与提交记录
 
@@ -94,17 +108,19 @@ https://github.com/liuyiling021122-jpg/visual-analysis/commits/main
 ## 主要维护文件
 
 | 文件 | 说明 |
-|------|------|
-| `index.html` | 页面结构 |
+|---|---|
+| `zhuihua-demo/index.html` | **页面入口**（主维护版本） |
 | `css/flowering-rhythm.css` | 主视图样式 |
-| `js/flowering-rhythm.js` | 主视图交互与路线切换 |
-| `js/data-loader.js` | 数据入口 |
+| `js/flowering-rhythm.js` | **启动入口**：主视图交互与路线切换 |
+| `js/data-loader.js` | 数据加载入口 |
 | `components/route-map-panel.html` + `js/route-map-panel.js` | 左侧路线图面板 |
 | `components/livelihood-risk-panel.html` + `js/livelihood-risk-panel.js` | 右侧生计风险面板 |
 | `server.mjs` | 本地静态服务 |
 
+> **关于早期模块：** 仓库中仍保留 `js/app.js`、`components/top-toolbar.html`、`components/route-rhythm-view.html`、`components/status-bar.html`、`components/weather-detail-panel.html` 等早期文件。这些文件未被当前入口页面引用，属于遗留代码，不影响运行。
+
 ## 文件版本说明
 
-- `index.html`：当前主要维护版本，依赖同级目录下的 CSS、JS、组件、素材和数据文件。
-- `zhuihua-demo/`：可独立部署的 demo 副本，用于 GitHub Pages 发布。
-- `index.standalone.html`：旧的单文件备份版，适合临时离线展示。
+- `zhuihua-demo/index.html`：当前主要维护版本，依赖同级目录下的 CSS、JS、组件、素材和数据文件。
+- `index.html`：根目录跳转页，自动转向 `zhuihua-demo/`。
+- `zhuihua-demo/index.standalone.html`：旧的单文件备份版，适合临时离线展示。
