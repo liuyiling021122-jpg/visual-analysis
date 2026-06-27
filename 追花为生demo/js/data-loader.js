@@ -6,6 +6,8 @@ export const dataFiles = {
   routeSegmentSummary: `${DERIVED_ROOT}/route_segment_summary.csv`,
   routeSegments: `${DATA_ROOT}/data_migration_routes_detailed.csv`,
   floweringCalendar: `${DATA_ROOT}/flowering_calendar_by_province.csv`,
+  provinceNectarDistribution: `${DATA_ROOT}/province_nectar_distribution.csv`,
+  nectarLocationCenters: `${DERIVED_ROOT}/nectar_location_centers.json`,
   weatherDaily: `${DATA_ROOT}/weather_daily_migration_routes.csv`,
   profitByMode: `${DATA_ROOT}/beekeeper_profit_by_mode.csv`,
   finance: `${DATA_ROOT}/beekeeper_finance_detail.csv`,

@@ -2,7 +2,7 @@ import { loadComponents } from './component-loader.js';
 import { initRouteMapPanel } from './route-map-panel.js';
 import { initLivelihoodRiskPanel } from './livelihood-risk-panel.js';
 import { appState, setSelectedNode, subscribe, updateState } from './state.js';
-import { dataFiles, loadCsv } from './data-loader.js';
+import { dataFiles, loadCsv, loadJson } from './data-loader.js';
 
 const eastSegments = [
   { id: 1, route: '福建 → 广东', dates: '12/02–12/12', start: [12, 2], end: [12, 12], flowerWindows: [[12, 2, 12, 12]], source: '鸭脚木、野桂花补给', note: '荔枝未开，仅表示低权重越冬补给。' },
@@ -149,6 +149,31 @@ const nwiFocusViews = {
   7: { zoom: 2.75, scrollX: 0.3, scrollY: 0.22 },
   8: { zoom: 3.2, scrollX: 0.87, scrollY: 0.1 },
 };
+const westNwiFocusViews = {
+  1: { zoom: 3.2, scrollX: 0.98, scrollY: 0.78 },
+  2: { zoom: 3.2, scrollX: 0, scrollY: 0.16 },
+  3: { zoom: 3.2, scrollX: 0.46, scrollY: 0.27 },
+  4: { zoom: 3.2, scrollX: 0.55, scrollY: 0.55 },
+  5: { zoom: 3.2, scrollX: 0.56, scrollY: 0.62 },
+  6: { zoom: 3.2, scrollX: 0.59, scrollY: 0.65 },
+  7: { zoom: 3.2, scrollX: 0.39, scrollY: 0.86 },
+};
+const centralNwiFocusViews = {
+  1: { zoom: 3.2, scrollX: 0.98, scrollY: 0.18 },
+  2: { zoom: 3.2, scrollX: 0, scrollY: 0.57 },
+  3: { zoom: 3.2, scrollX: 0, scrollY: 0.44 },
+  4: { zoom: 3.2, scrollX: 0, scrollY: 0.37 },
+  5: { zoom: 3.2, scrollX: 0.43, scrollY: 0.39 },
+  6: { zoom: 3.2, scrollX: 0.58, scrollY: 0.42 },
+};
+const southNwiFocusViews = {
+  1: { zoom: 3.2, scrollX: 0, scrollY: 0.5 },
+  2: { zoom: 3.2, scrollX: 0.05, scrollY: 0.66 },
+  3: { zoom: 3.2, scrollX: 0, scrollY: 0.75 },
+  4: { zoom: 3.2, scrollX: 0.35, scrollY: 0.78 },
+  5: { zoom: 3.2, scrollX: 0.7, scrollY: 0.74 },
+  6: { zoom: 3.2, scrollX: 0.65, scrollY: 0.42 },
+};
 const nwiCalendarPlacements = {
   1: { x: 0.063, y: 0.07 },
   2: { x: 0.12, y: 0.23 },
@@ -158,6 +183,31 @@ const nwiCalendarPlacements = {
   6: { x: 0.137, y: 0.487 },
   7: { x: 0.085, y: 0.129 },
   8: { x: 0.102, y: 0.14 },
+};
+const westNwiCalendarPlacements = {
+  1: { x: 0.065, y: 0.065 },
+  2: { x: 0.12, y: 0.23 },
+  3: { x: 0.61, y: 0.28 },
+  4: { x: 0.61, y: 0.24 },
+  5: { x: 0.61, y: 0.24 },
+  6: { x: 0.61, y: 0.24 },
+  7: { x: 0.09, y: 0.13 },
+};
+const centralNwiCalendarPlacements = {
+  1: { x: 0.68, y: 0.07 },
+  2: { x: 0.07, y: 0.11 },
+  3: { x: 0.03, y: 0.06 },
+  4: { x: 0.055, y: 0.08 },
+  5: { x: 0.65, y: 0.1 },
+  6: { x: 0.61, y: 0.08 },
+};
+const southNwiCalendarPlacements = {
+  1: { x: 0.055, y: 0.073 },
+  2: { x: 0.69, y: 0.5 },
+  3: { x: 0.05, y: 0.083 },
+  4: { x: 0.69, y: 0.223 },
+  5: { x: 0.715, y: 0 },
+  6: { x: 0.708, y: 0 },
 };
 
 const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -191,6 +241,11 @@ let hoveredCombinedRouteId = '';
 let combinedSegmentFocusState = null;
 let originalFloweringLegendMarkup = null;
 let originalFloweringLegendLabel = null;
+let provinceNectarDataPromise = null;
+let provinceNectarRows = [];
+let provinceNectarCenters = {};
+let provinceBoundaryFeatures = new Map();
+let activeProvinceNectarContext = null;
 
 async function bootstrap() {
   await loadComponents();
@@ -271,7 +326,7 @@ async function loadDailyNwi() {
           };
         })
         .filter((row) => Number.isFinite(row.nwi))
-        .sort((a, b) => currentRouteId === 'central-route'
+        .sort((a, b) => currentRouteId === 'central-route' || segmentEndOrdinal(segment) < segmentStartOrdinal(segment)
           ? chronologicalOrdinalForSegment(a.ordinal, segment) - chronologicalOrdinalForSegment(b.ordinal, segment)
           : a.ordinal - b.ordinal);
       const dailyRows = weatherRows.filter((row) => row.inStayPeriod);
@@ -398,7 +453,294 @@ function setVisualizationViewBox(viewBox) {
 }
 
 function isCombinedRouteSelection(state = appState) {
-  return primaryRouteIds.every((routeId) => state.selectedRoutes.includes(routeId));
+  const selectedCount = selectedCombinedRouteIds(state).length;
+  return selectedCount >= 2;
+}
+
+function selectedCombinedRouteIds(state = appState) {
+  return primaryRouteIds.filter((routeId) => state.selectedRoutes.includes(routeId));
+}
+
+function isCombinedRouteVisible(routeId, state = appState) {
+  if (!isCombinedRouteSelection(state)) return true;
+  return selectedCombinedRouteIds(state).includes(routeId);
+}
+
+async function loadProvinceNectarData() {
+  if (provinceNectarDataPromise) return provinceNectarDataPromise;
+  provinceNectarDataPromise = Promise.all([
+    loadCsv(dataFiles.provinceNectarDistribution),
+    loadJson(dataFiles.nectarLocationCenters),
+    loadJson(dataFiles.chinaBoundary),
+  ]).then(([rows, centersPayload, boundary]) => {
+    provinceNectarRows = rows;
+    provinceNectarCenters = centersPayload.centers || {};
+    provinceBoundaryFeatures = new Map(
+      (boundary.features || [])
+        .filter((feature) => feature.geometry && !String(feature.properties?.name || '').includes('境界线'))
+        .map((feature) => [normalizeProvinceName(feature.properties?.name), feature]),
+    );
+    return { rows: provinceNectarRows, centers: provinceNectarCenters, boundary };
+  }).catch((error) => {
+    console.warn('Province nectar map data unavailable:', error);
+    return null;
+  });
+  return provinceNectarDataPromise;
+}
+
+async function showProvinceNectarMapForSegment(segmentLike) {
+  const host = document.querySelector('[data-province-nectar-map]');
+  if (!host || !segmentLike) return;
+  if (isCombinedRouteMode || selectedCombinedRouteIds().length !== 1) {
+    hideProvinceNectarMap();
+    return;
+  }
+  const data = await loadProvinceNectarData();
+  if (!data) return;
+
+  const context = provinceNectarContext(segmentLike);
+  activeProvinceNectarContext = context;
+  if (!context?.province) {
+    host.hidden = true;
+    host.replaceChildren();
+    return;
+  }
+  host.innerHTML = renderProvinceNectarMiniMap(context);
+  host.hidden = false;
+}
+
+function hideProvinceNectarMap() {
+  activeProvinceNectarContext = null;
+  const host = document.querySelector('[data-province-nectar-map]');
+  if (!host) return;
+  host.hidden = true;
+  host.replaceChildren();
+}
+
+function provinceNectarContext(segmentLike) {
+  const targetProvince = normalizeProvinceName(segmentLike.toLocation || segmentLike.to_location || segmentLike.location || lastRouteLocation(segmentLike.route));
+  const sourceProvince = normalizeProvinceName(segmentLike.fromLocation || segmentLike.from_location || firstRouteLocation(segmentLike.route));
+  const targetRows = provinceNectarRows.filter((row) => normalizeProvinceName(row.province) === targetProvince);
+  const fallbackRows = provinceNectarRows.filter((row) => normalizeProvinceName(row.province) === sourceProvince);
+  const rows = targetRows.length ? targetRows : fallbackRows;
+  const province = targetRows.length ? targetProvince : fallbackRows.length ? sourceProvince : targetProvince || sourceProvince;
+  const feature = provinceBoundaryFeatures.get(province);
+  const points = rows.map((row) => {
+    const center = provinceNectarCenters[[row.province, row.city, row.county].join('|')];
+    return center ? { ...row, lng: Number(center.lng), lat: Number(center.lat) } : null;
+  }).filter(Boolean);
+  return { province, feature, rows, points, segment: segmentLike };
+}
+
+function renderProvinceNectarMiniMap(context) {
+  const frame = provinceMiniMapFrame(context.feature, context.points);
+  const provincePath = context.feature ? renderProvinceFeature(context.feature, frame) : '';
+  const points = context.points.map((point, index) => renderNectarPoint(point, index, frame)).join('');
+  const missingCount = Math.max(0, context.rows.length - context.points.length);
+  const plantCount = new Set(context.rows.map((row) => row.honey_plant).filter(Boolean)).size;
+  const locationCount = new Set(context.rows.map((row) => [row.city, row.county].join('|'))).size;
+  const segmentLabel = context.segment?.route || [context.segment?.fromLocation, context.segment?.toLocation].filter(Boolean).join(' → ');
+
+  return `
+    <header class="province-nectar-mini-map-header">
+      <span>${escapeSvgText(context.province || '省域')}</span>
+      <strong>蜜源分布</strong>
+    </header>
+    <svg class="province-nectar-mini-map-svg" viewBox="0 0 ${frame.width} ${frame.height}" role="img" aria-label="${escapeSvgAttribute(context.province)}省内蜜源小地图">
+      <rect class="province-nectar-map-bg" x="0" y="0" width="${frame.width}" height="${frame.height}" rx="6"></rect>
+      <g class="province-nectar-map-shape">${provincePath}</g>
+      <g class="province-nectar-map-points">${points}</g>
+    </svg>
+    <div class="province-nectar-mini-map-meta">
+      <span>${escapeSvgText(segmentLabel || '当前路段')}</span>
+      <span>${locationCount} 点 · ${plantCount} 类${missingCount ? ` · ${missingCount} 未定位` : ''}</span>
+    </div>
+  `;
+}
+
+function renderProvinceFeature(feature, frame) {
+  const geometry = feature.geometry;
+  if (!geometry) return '';
+  if (geometry.type === 'Polygon') {
+    return geometry.coordinates.map((polygon) => renderProvincePolygon(polygon, frame)).join('');
+  }
+  if (geometry.type === 'MultiPolygon') {
+    return geometry.coordinates.map((polygon) => renderProvincePolygon(polygon, frame)).join('');
+  }
+  return '';
+}
+
+function renderProvincePolygon(polygon, frame) {
+  return polygon.map((ring, index) => {
+    const d = ring
+      .filter((coordinate) => Array.isArray(coordinate) && coordinate.length >= 2)
+      .map((coordinate, pointIndex) => {
+        const point = projectProvincePoint(coordinate[0], coordinate[1], frame);
+        return `${pointIndex ? 'L' : 'M'} ${point.x} ${point.y}`;
+      })
+      .join(' ');
+    return `<path class="province-nectar-boundary${index ? ' is-hole' : ''}" d="${d} Z"></path>`;
+  }).join('');
+}
+
+function renderNectarPoint(point, index, frame) {
+  const position = projectProvincePoint(point.lng, point.lat, frame);
+  const icon = nectarIconForPlant(point.honey_plant);
+  const title = `${point.city}${point.county ? ' · ' + point.county : ''} · ${point.honey_plant}`;
+  const scaleClass = point.distribution_scale === '大规模' ? ' is-large' : point.distribution_scale === '中等规模' ? ' is-medium' : '';
+  const haloRadius = point.distribution_scale === '大规模' ? 8.5 : point.distribution_scale === '中等规模' ? 7.8 : 7.2;
+  const offset = pointOffset(index);
+  const x = position.x + offset.x;
+  const y = position.y + offset.y;
+  if (icon) {
+    return `
+      <g class="province-nectar-marker${scaleClass}" transform="translate(${x} ${y})">
+        <title>${escapeSvgText(title)}</title>
+        <circle class="province-nectar-marker-halo" r="${haloRadius}"></circle>
+        <image href="${escapeSvgAttribute(icon)}" x="-6" y="-6" width="12" height="12" preserveAspectRatio="xMidYMid meet"></image>
+      </g>
+    `;
+  }
+  return `
+    <g class="province-nectar-marker is-placeholder${scaleClass}" transform="translate(${x} ${y})">
+      <title>${escapeSvgText(title)}</title>
+      <circle class="province-nectar-marker-halo" r="${haloRadius}"></circle>
+      <circle class="province-nectar-placeholder-dot" r="4.3"></circle>
+      <path class="province-nectar-placeholder-sprout" d="M 0 3 C -1 -1 -4 -2 -5 -5 M 0 3 C 1 -1 4 -2 5 -5"></path>
+    </g>
+  `;
+}
+
+function provinceMiniMapFrame(feature, points) {
+  const width = 224;
+  const height = 160;
+  const padding = 12;
+  const bounds = feature ? geoFeatureBounds(feature) : pointBounds(points);
+  const safeBounds = expandBounds(bounds || pointBounds(points) || { minLng: 73, maxLng: 135, minLat: 17, maxLat: 54 }, 0.04);
+  const minProjected = mercatorProject(safeBounds.minLng, safeBounds.minLat);
+  const maxProjected = mercatorProject(safeBounds.maxLng, safeBounds.maxLat);
+  const minX = Math.min(minProjected.x, maxProjected.x);
+  const maxX = Math.max(minProjected.x, maxProjected.x);
+  const minY = Math.min(minProjected.y, maxProjected.y);
+  const maxY = Math.max(minProjected.y, maxProjected.y);
+  const scale = Math.min((width - padding * 2) / Math.max(maxX - minX, 0.0001), (height - padding * 2) / Math.max(maxY - minY, 0.0001));
+  const drawWidth = (maxX - minX) * scale;
+  const drawHeight = (maxY - minY) * scale;
+  return {
+    width,
+    height,
+    padding,
+    minX,
+    maxY,
+    scale,
+    offsetX: (width - drawWidth) / 2,
+    offsetY: (height - drawHeight) / 2,
+  };
+}
+
+function projectProvincePoint(lng, lat, frame) {
+  const point = mercatorProject(Number(lng), Number(lat));
+  return {
+    x: Number((frame.offsetX + (point.x - frame.minX) * frame.scale).toFixed(2)),
+    y: Number((frame.offsetY + (frame.maxY - point.y) * frame.scale).toFixed(2)),
+  };
+}
+
+function mercatorProject(lng, lat) {
+  const clampedLat = Math.max(-85, Math.min(85, Number(lat)));
+  const rad = Math.PI / 180;
+  return {
+    x: Number(lng),
+    y: Math.log(Math.tan(Math.PI / 4 + clampedLat * rad / 2)) / rad,
+  };
+}
+
+function geoFeatureBounds(feature) {
+  const coordinates = [];
+  collectCoordinates(feature.geometry?.coordinates, coordinates);
+  if (!coordinates.length) return null;
+  return coordinates.reduce((bounds, coordinate) => ({
+    minLng: Math.min(bounds.minLng, Number(coordinate[0])),
+    maxLng: Math.max(bounds.maxLng, Number(coordinate[0])),
+    minLat: Math.min(bounds.minLat, Number(coordinate[1])),
+    maxLat: Math.max(bounds.maxLat, Number(coordinate[1])),
+  }), { minLng: Infinity, maxLng: -Infinity, minLat: Infinity, maxLat: -Infinity });
+}
+
+function collectCoordinates(input, output) {
+  if (!Array.isArray(input)) return;
+  if (typeof input[0] === 'number' && typeof input[1] === 'number') {
+    output.push(input);
+    return;
+  }
+  input.forEach((item) => collectCoordinates(item, output));
+}
+
+function pointBounds(points) {
+  if (!points.length) return null;
+  return points.reduce((bounds, point) => ({
+    minLng: Math.min(bounds.minLng, point.lng),
+    maxLng: Math.max(bounds.maxLng, point.lng),
+    minLat: Math.min(bounds.minLat, point.lat),
+    maxLat: Math.max(bounds.maxLat, point.lat),
+  }), { minLng: Infinity, maxLng: -Infinity, minLat: Infinity, maxLat: -Infinity });
+}
+
+function expandBounds(bounds, ratio = 0.08) {
+  const lngSpan = Math.max(bounds.maxLng - bounds.minLng, 0.8);
+  const latSpan = Math.max(bounds.maxLat - bounds.minLat, 0.8);
+  return {
+    minLng: bounds.minLng - lngSpan * ratio,
+    maxLng: bounds.maxLng + lngSpan * ratio,
+    minLat: bounds.minLat - latSpan * ratio,
+    maxLat: bounds.maxLat + latSpan * ratio,
+  };
+}
+
+function normalizeProvinceName(value) {
+  return String(value || '')
+    .replace(/省|市|自治区|壮族|回族|维吾尔|特别行政区/g, '')
+    .trim();
+}
+
+function firstRouteLocation(route) {
+  return String(route || '').split(/\s*→\s*/)[0] || '';
+}
+
+function lastRouteLocation(route) {
+  const parts = String(route || '').split(/\s*→\s*/);
+  return parts[parts.length - 1] || '';
+}
+
+function nectarIconForPlant(plant) {
+  const name = String(plant || '');
+  const iconMap = [
+    [/油菜/, 'rapeseed.png'],
+    [/紫云英/, 'milk-vetch.png'],
+    [/荔枝/, 'lychee.png'],
+    [/刺槐|洋槐/, 'ci-huai.png'],
+    [/枣/, 'jujube.png'],
+    [/荆条/, 'vitex.png'],
+    [/椴|紫椴|糠椴/, 'basswood.png'],
+    [/向日葵/, 'sunflower.png'],
+    [/棉花/, 'cotton.png'],
+    [/荞麦/, 'buckwheat.png'],
+    [/老瓜头/, 'old-gua-tou.png'],
+    [/芝麻/, 'sesame.png'],
+  ];
+  const matched = iconMap.find(([pattern]) => pattern.test(name));
+  return matched ? `assets/nectar/${matched[1]}` : '';
+}
+
+function pointOffset(index) {
+  const offsets = [
+    { x: 0, y: 0 },
+    { x: 4, y: -3 },
+    { x: -4, y: 3 },
+    { x: 3, y: 4 },
+    { x: -3, y: -4 },
+  ];
+  return offsets[index % offsets.length];
 }
 
 async function loadFloweringOverlay() {
@@ -441,6 +783,7 @@ function renderAnnotationLayers() {
 
 async function renderCombinedRouteView() {
   closeNwiDetail();
+  hideProvinceNectarMap();
   isCombinedRouteMode = true;
   hoveredCombinedSegmentKey = '';
   hoveredCombinedRouteId = '';
@@ -493,6 +836,7 @@ async function renderCombinedInlineSvg() {
   indexCombinedSvgCells(mountedSvg);
   renderCombinedRouteHighlightLayer(mountedSvg);
   renderCombinedSegmentLines(mountedSvg);
+  applyCombinedRouteFilter();
   paintCombinedSvgCells();
   bindCombinedSvgCellInteractions(mountedSvg);
 }
@@ -721,6 +1065,24 @@ function markCombinedTextLabels(svg) {
     path.classList.toggle('combined-month-label-path', combinedMonthLabelPathIndexes.has(index));
     path.classList.toggle('combined-route-end-label-path', combinedRouteEndLabelPathIndexes.has(index));
   });
+  const routeLabelPaths = blackPaths.filter((_, index) => combinedRouteEndLabelPathIndexes.has(index));
+  const leftLabels = routeLabelPaths
+    .filter((path) => combinedPathCenter(path).x < combinedViewBox.width / 2)
+    .sort((a, b) => combinedPathCenter(a).y - combinedPathCenter(b).y);
+  const rightLabels = routeLabelPaths
+    .filter((path) => combinedPathCenter(path).x >= combinedViewBox.width / 2)
+    .sort((a, b) => combinedPathCenter(a).y - combinedPathCenter(b).y);
+  [leftLabels, rightLabels].forEach((labels) => {
+    labels.forEach((path, index) => {
+      const routeId = combinedRouteArcOrder[index];
+      if (routeId) path.dataset.combinedRouteLabel = routeId;
+    });
+  });
+}
+
+function combinedPathCenter(path) {
+  const box = path.getBBox();
+  return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
 }
 
 function renderCombinedRouteHighlightLayer(svg) {
@@ -736,6 +1098,7 @@ function renderCombinedRouteHighlightLayer(svg) {
   baseLayer.setAttribute('aria-hidden', 'true');
   svg.querySelectorAll('.combined-cell').forEach((cell) => {
     const clone = cell.cloneNode(false);
+    const routeId = cell.dataset.combinedRouteId;
     clone.removeAttribute('tabindex');
     clone.removeAttribute('role');
     [...clone.attributes].forEach((attribute) => {
@@ -743,6 +1106,9 @@ function renderCombinedRouteHighlightLayer(svg) {
     });
     clone.removeAttribute('class');
     clone.classList.add('combined-route-base-dim-cell');
+    if (routeId) {
+      clone.dataset.combinedRouteBase = routeId;
+    }
     clone.setAttribute('fill', '#E2E1DE');
     clone.removeAttribute('stroke');
     baseLayer.append(clone);
@@ -923,7 +1289,9 @@ function setHoveredCombinedRoute(routeId) {
 function updateCombinedRouteHighlightState() {
   document.querySelectorAll('[data-combined-route-highlight]').forEach((image) => {
     const routeId = image.dataset.combinedRouteHighlight;
-    image.classList.toggle('is-active', Boolean(routeId && routeId === hoveredCombinedRouteId));
+    const visible = isCombinedRouteVisible(routeId);
+    image.classList.toggle('is-filtered-out', !visible);
+    image.classList.toggle('is-active', Boolean(visible && routeId && routeId === hoveredCombinedRouteId));
   });
 }
 
@@ -943,9 +1311,11 @@ function updateCombinedSegmentLineStates() {
   const selectedKey = selectedCombinedSegmentKey();
   document.querySelectorAll('[data-combined-segment-line-key]').forEach((group) => {
     const key = group.dataset.combinedSegmentLineKey;
+    const visible = isCombinedRouteVisible(group.dataset.combinedRouteId);
     group.classList.toggle('is-hovered', Boolean(key && key === hoveredCombinedSegmentKey));
     group.classList.toggle('is-selected', Boolean(key && key === selectedKey));
-    group.classList.toggle('is-hidden', !activeLayers.has('l2'));
+    group.classList.toggle('is-filtered-out', !visible);
+    group.classList.toggle('is-hidden', !visible || !activeLayers.has('l2'));
   });
 }
 
@@ -1001,6 +1371,15 @@ function ordinalToMonthDay(ordinal) {
 function paintCombinedSvgCells() {
   if (!isCombinedRouteMode || !combinedCellDetails.size) return;
   combinedCellDetails.forEach((detail, cell) => {
+    const routeVisible = isCombinedRouteVisible(detail.routeId);
+    cell.classList.toggle('is-filtered-out', !routeVisible);
+    cell.setAttribute('aria-hidden', String(!routeVisible));
+    if (!routeVisible) {
+      cell.removeAttribute('tabindex');
+    } else {
+      cell.setAttribute('tabindex', '0');
+    }
+
     const effective = Boolean(detail.row && detail.segment && isEffectiveHoneyDay(detail.row, detail.segment));
     const hasL2 = Boolean(detail.segment);
     const showL3 = Boolean(detail.row?.goodHoneyDay && activeLayers.has('l3'));
@@ -1586,6 +1965,7 @@ function selectCombinedSegment(routeId, segmentIndex, focusOrdinal = null) {
   const routeData = combinedRouteData.get(routeId);
   const segment = routeData?.segments[segmentIndex];
   if (!segment) return;
+  showProvinceNectarMapForSegment(segment);
   document.querySelector('[data-risk-tab="route"]')?.click();
   setSelectedNode(`${routeData.routeName}-2020s-${segment.id}`, {
     id: `${routeData.routeName}-2020s-${segment.id}`,
@@ -1601,7 +1981,17 @@ function selectCombinedSegment(routeId, segmentIndex, focusOrdinal = null) {
 
 function applyCombinedSelection() {
   if (!isCombinedRouteMode) return;
+  applyCombinedRouteFilter();
   paintCombinedSvgCells();
+}
+
+function applyCombinedRouteFilter() {
+  document.querySelectorAll('[data-combined-route-base], [data-combined-route-label]').forEach((element) => {
+    const routeId = element.dataset.combinedRouteBase || element.dataset.combinedRouteLabel;
+    element.classList.toggle('is-filtered-out', !isCombinedRouteVisible(routeId));
+  });
+  updateCombinedRouteHighlightState();
+  updateCombinedSegmentLineStates();
 }
 
 function showCombinedViewLegend() {
@@ -2109,7 +2499,7 @@ function renderNwiBubble(segment, index) {
   const anchor = overlayPointForOrdinal(ordinal, index);
   const nwi = segmentNwi[index];
   const hasNwi = Number.isFinite(nwi);
-  const radius = hasNwi ? 10 + ((nwi - 45) / 45) * 12 : 12;
+  const radius = hasNwi ? Math.max(6, 10 + ((nwi - 45) / 45) * 12) : 12;
   const center = nwiBubbleOrbitPoint(ordinal, index);
   const value = hasNwi ? Math.round(nwi) : '?';
   return `
@@ -2155,18 +2545,21 @@ function renderDailyNwiBubbles(segmentIndex) {
   const focused = selectedNwiSegment === segmentIndex;
   layer.classList.toggle('is-focused', focused);
   const segment = segments[segmentIndex];
-  const stayAreaPath = focused ? nwiStayAreaPath(segment, segmentIndex, 133) : '';
+  const nwiAreaOffset = focused && currentRouteId === 'south-route'
+    ? southNwiFocusedAreaOffset(segmentIndex)
+    : 133;
+  const stayAreaPath = focused ? nwiStayAreaPath(segment, segmentIndex, nwiAreaOffset) : '';
   const stayArea = stayAreaPath
     ? `<path class="overlay-nwi-stay-area" data-nwi-stay-area tabindex="0" role="button" aria-label="${segment.route}, ${segment.dates}" d="${stayAreaPath}" style="fill:#65977d;fill-opacity:0.24;stroke:#3f7776;stroke-opacity:0.88;stroke-width:1.65;stroke-linejoin:round;pointer-events:visiblePainted"></path>`
     : '';
   const goodHoneyAreas = focused && activeLayers.has('l3')
-    ? renderGoodHoneyAreas(rows, segment, segmentIndex, 133)
+    ? renderGoodHoneyAreas(rows, segment, segmentIndex, nwiAreaOffset)
     : '';
   const effectiveHoneyAreas = focused && activeLayers.has('l5')
-    ? renderEffectiveHoneyAreas(rows, segment, segmentIndex, 133)
+    ? renderEffectiveHoneyAreas(rows, segment, segmentIndex, nwiAreaOffset)
     : '';
   const stayArc = focused
-    ? `<path class="overlay-nwi-stay-arc" d="${nwiDailyPathForOrdinalRange(segmentStartOrdinal(segment), segmentEndOrdinal(segment), 133, segmentIndex)}"></path>`
+    ? `<path class="overlay-nwi-stay-arc" d="${nwiDailyPathForOrdinalRange(segmentStartOrdinal(segment), segmentEndOrdinal(segment), nwiAreaOffset, segmentIndex)}"></path>`
     : '';
   layer.innerHTML = `${stayArea}${goodHoneyAreas}${effectiveHoneyAreas}${stayArc}<g data-nwi-daily-bubbles>${rows.map((row, index) => {
     const point = nwiDailyOrbitPoint(row.ordinal, segmentIndex);
@@ -2601,7 +2994,14 @@ function focusCanvasOnNwi(segmentIndex) {
   const shell = document.querySelector('[data-canvas-shell]');
   if (!canvas || !shell) return;
   const focus = nwiFocusBounds(segmentIndex);
-  const view = nwiFocusViews[segment.id];
+  const routeFocusViews = currentRouteId === 'west-northwest'
+    ? westNwiFocusViews
+    : currentRouteId === 'central-route'
+      ? centralNwiFocusViews
+      : currentRouteId === 'south-route'
+        ? southNwiFocusViews
+        : nwiFocusViews;
+  const view = routeFocusViews[segment.id] || nwiFocusViews[segment.id];
   const exit = document.querySelector('[data-nwi-focus-exit]');
   const calendar = document.querySelector('[data-nwi-focus-calendar]');
   if (exit) {
@@ -2729,7 +3129,15 @@ function positionNwiFocusCalendar() {
   const inset = 20;
   const viewportLeft = shell.scrollLeft - canvas.offsetLeft;
   const viewportTop = shell.scrollTop - canvas.offsetTop;
-  const placement = nwiCalendarPlacements[Number(calendar.dataset.segmentId)] || 'top-left';
+  const segmentId = Number(calendar.dataset.segmentId);
+  const routePlacements = currentRouteId === 'west-northwest'
+    ? westNwiCalendarPlacements
+    : currentRouteId === 'central-route'
+      ? centralNwiCalendarPlacements
+      : currentRouteId === 'south-route'
+        ? southNwiCalendarPlacements
+        : nwiCalendarPlacements;
+  const placement = routePlacements[segmentId] || nwiCalendarPlacements[segmentId] || 'top-left';
   let left = viewportLeft + inset;
   let top = viewportTop + inset;
   if (typeof placement === 'object') {
@@ -3042,6 +3450,10 @@ function escapeSvgText(value) {
   return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function escapeSvgAttribute(value) {
+  return escapeSvgText(value).replace(/"/g, '&quot;');
+}
+
 function segmentGeometry(index) {
   const segment = segments[index];
   const ordinal = segmentMidOrdinal(segment);
@@ -3329,6 +3741,14 @@ function southNwiOverviewDailyOrbitPoint(rawOrdinal, segmentIndex) {
   return southNwiOffsetPoint(rawOrdinal, layout.laneIndex, layout.dailyOffset, layout.side);
 }
 
+function southNwiFocusedDailyOffset(segmentIndex) {
+  return southNwiLayout(segmentIndex).dailyOffset + 34;
+}
+
+function southNwiFocusedAreaOffset(segmentIndex) {
+  return Math.max(0, southNwiFocusedDailyOffset(segmentIndex) - 18);
+}
+
 function southNwiLayout(segmentIndex) {
   if (!laneDayPoints.length) {
     return { laneIndex: segmentIndex, bubbleOffset: 68, dailyOffset: 105, side: 'below' };
@@ -3358,11 +3778,25 @@ function nwiDailyOrbitPoint(rawOrdinal, segmentIndex) {
 }
 
 function nwiFocusedDailyOrbitPoint(rawOrdinal, segmentIndex) {
+  if (currentRouteId === 'central-route') {
+    return centralNwiPathPoint(rawOrdinal, segmentIndex, 145);
+  }
   if (currentRouteId === 'south-route') {
     const layout = southNwiLayout(segmentIndex);
-    return southNwiOffsetPoint(rawOrdinal, layout.laneIndex, layout.dailyOffset + 34, layout.side);
+    return southNwiOffsetPoint(rawOrdinal, layout.laneIndex, southNwiFocusedDailyOffset(segmentIndex), layout.side);
   }
   return nwiOrbitPoint(rawOrdinal, 145, segmentIndex);
+}
+
+function centralNwiPathPoint(rawOrdinal, segmentIndex, outerOffset) {
+  const layout = centralNwiLayout(segmentIndex, rawOrdinal, true);
+  const focusedOffset = layout.dailyOffset + (outerOffset - 105);
+  return centralNwiOffsetPoint(rawOrdinal, layout.laneIndex, focusedOffset, layout.side);
+}
+
+function southNwiPathPoint(rawOrdinal, segmentIndex, outerOffset) {
+  const layout = southNwiLayout(segmentIndex);
+  return southNwiOffsetPoint(rawOrdinal, layout.laneIndex, outerOffset, layout.side);
 }
 
 function nwiDailyPathForOrdinalRange(rawStart, rawEnd, outerOffset, segmentIndex) {
@@ -3373,9 +3807,9 @@ function nwiDailyPathForOrdinalRange(rawStart, rawEnd, outerOffset, segmentIndex
   }
   const points = [];
   for (let ordinal = start; ordinal < end; ordinal += 0.25) {
-    points.push(nwiOrbitPoint(ordinal, outerOffset, segmentIndex));
+    points.push(nwiPathPointForRoute(ordinal, segmentIndex, outerOffset));
   }
-  points.push(nwiOrbitPoint(end, outerOffset, segmentIndex));
+  points.push(nwiPathPointForRoute(end, segmentIndex, outerOffset));
   return points.map((point, index) => `${index ? 'L' : 'M'} ${point.x} ${point.y}`).join(' ');
 }
 
@@ -3391,12 +3825,18 @@ function nwiAreaPathForOrdinalRange(start, end, segmentIndex, outerOffset) {
   const outerPoints = [];
   for (let ordinal = start; ordinal < end; ordinal += 0.25) {
     basePoints.push(overlayPointForOrdinal(ordinal, segmentIndex));
-    outerPoints.push(nwiOrbitPoint(ordinal, outerOffset, segmentIndex));
+    outerPoints.push(nwiPathPointForRoute(ordinal, segmentIndex, outerOffset));
   }
   basePoints.push(overlayPointForOrdinal(end, segmentIndex));
-  outerPoints.push(nwiOrbitPoint(end, outerOffset, segmentIndex));
+  outerPoints.push(nwiPathPointForRoute(end, segmentIndex, outerOffset));
   const closedPoints = [...basePoints, ...outerPoints.reverse()];
   return `${closedPoints.map((point, index) => `${index ? 'L' : 'M'} ${point.x} ${point.y}`).join(' ')} Z`;
+}
+
+function nwiPathPointForRoute(rawOrdinal, segmentIndex, outerOffset) {
+  if (currentRouteId === 'central-route') return centralNwiPathPoint(rawOrdinal, segmentIndex, outerOffset);
+  if (currentRouteId === 'south-route') return southNwiPathPoint(rawOrdinal, segmentIndex, outerOffset);
+  return nwiOrbitPoint(rawOrdinal, outerOffset, segmentIndex);
 }
 
 function renderGoodHoneyAreas(rows, segment, segmentIndex, outerOffset) {
@@ -3489,8 +3929,8 @@ function degreesToRadians(degrees) {
 
 function nwiBubbleColor(nwi) {
   const progress = Math.max(0, Math.min(1, (nwi - 40) / 50));
-  const low = [187, 104, 78];
-  const high = [73, 151, 108];
+  const low = [247, 196, 183];
+  const high = [150, 230, 206];
   const channels = low.map((channel, index) => Math.round(channel + (high[index] - channel) * progress));
   return `rgb(${channels.join(', ')})`;
 }
@@ -3602,6 +4042,7 @@ function initLaneFocusBack() {
   document.querySelector('[data-lane-focus-back]')?.addEventListener('click', () => {
     hoveredLaneIndex = null;
     selectedLaneIndex = null;
+    hideProvinceNectarMap();
     setSelectedNode(null, null);
     applyLaneFocus();
   });
@@ -3612,6 +4053,7 @@ function selectLane(laneIndex) {
   const segment = segments[segmentIndex];
   if (!segment) return;
   const [fromLocation, toLocation] = segment.route.split(/\s*→\s*/);
+  showProvinceNectarMapForSegment({ ...segment, fromLocation, toLocation });
   document.querySelector('[data-risk-tab="route"]')?.click();
   setSelectedNode(`${currentRouteConfig.routeName}-2020s-${segment.id}`, {
     id: `${currentRouteConfig.routeName}-2020s-${segment.id}`,
@@ -3828,6 +4270,7 @@ function initRouteStatus() {
 
 async function switchMainRoute(routeId) {
   closeNwiDetail();
+  hideProvinceNectarMap();
   resetCombinedSegmentFocus({ restoreView: false });
   hideCombinedViewLegend();
   isCombinedRouteMode = false;

@@ -306,7 +306,7 @@
   box-sizing: border-box;
   height: 6px;
   background: transparent;
-  border: 1px solid #315d49;
+  border: 1.3px solid var(--semantic-weather);
 }
 
 .nwi-overview-rows {
@@ -378,7 +378,7 @@
   overflow: hidden;
   color: var(--text-secondary);
   font: 500 4.5px/1 var(--font-family-base);
-  background: color-mix(in srgb, var(--nwi-day-color) 32%, transparent);
+  background: color-mix(in srgb, var(--nwi-day-color) 56%, transparent);
   border: 0.5px solid rgba(255, 253, 248, 0.7);
   border-radius: 1px;
   cursor: pointer;
@@ -393,8 +393,8 @@
 }
 
 .nwi-overview-day.has-l5 {
-  border-width: 1px;
-  border-color: #315d49;
+  border-width: 1.3px;
+  border-color: var(--semantic-weather);
   box-shadow: inset 0 0 0 0.5px rgba(255, 253, 248, 0.9);
 }
 
@@ -448,15 +448,29 @@
 /* South route overview calendar positions.
    Adjust only these values to move the two South-route NWI calendar windows. */
 .nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-calendar.is-early {
-  left: 66.5%;
-  top: 30%;
-  width: 32%;
+  left: 66%;
+  top: 27%;
 }
 
 .nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-calendar.is-late {
-  left: 66.5%;
-  top: 52%;
-  width: 32%;
+  left: 66%;
+  top: 45%;
+}
+
+.nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-calendar {
+  --nwi-overview-cell-size: clamp(12px, 4.2cqw, 16px);
+  --nwi-overview-cell-gap: clamp(0.8px, 0.35cqw, 1.3px);
+  width: fit-content;
+  min-width: 27%;
+  max-width: 31%;
+}
+
+.nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-header {
+  justify-content: flex-start;
+  width: max-content;
+  max-width: 100%;
+  gap: 5cqw;
+  padding-right: 1.2cqw;
 }
 
 /* Central route overview calendar positions.
@@ -519,7 +533,7 @@
 
 .nwi-overview-legend .is-l5::before {
   height: 1.8cqw;
-  border-width: 0.35cqw;
+  border-width: clamp(1.2px, 0.48cqw, 1.8px);
 }
 
 .nwi-overview-legend .is-empty::before {
@@ -579,6 +593,17 @@
   gap: 0.35cqw;
 }
 
+.nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-heat-main {
+  width: max-content;
+  max-width: 100%;
+}
+
+.nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-heat-grid {
+  grid-template-columns: repeat(var(--overview-weeks), var(--nwi-overview-cell-size));
+  grid-template-rows: repeat(7, var(--nwi-overview-cell-size));
+  gap: var(--nwi-overview-cell-gap);
+}
+
 .nwi-overview-heat-cell {
   position: relative;
   box-sizing: border-box;
@@ -593,12 +618,17 @@
   border-radius: 0.22cqw;
 }
 
+.nwi-overview-calendars[data-route-id='south-route'] .nwi-overview-heat-cell {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
 .nwi-overview-heat-cell.is-outside {
   visibility: hidden;
 }
 
 .nwi-overview-heat-cell.is-active {
-  background: color-mix(in srgb, var(--nwi-day-color) 32%, transparent);
+  background: color-mix(in srgb, var(--nwi-day-color) 56%, transparent);
   border-color: rgba(255, 253, 248, 0.72);
   cursor: pointer;
 }
@@ -612,7 +642,7 @@
 }
 
 .nwi-overview-heat-cell.has-l5 {
-  border: 0.42cqw solid #315d49;
+  border: clamp(1.3px, 0.52cqw, 1.9px) solid var(--semantic-weather);
   box-shadow: inset 0 0 0 0.18cqw rgba(255, 253, 248, 0.92);
 }
 
@@ -707,7 +737,7 @@
   box-sizing: border-box;
   height: 9px;
   background: transparent;
-  border: 2px solid #426d58;
+  border: 2px solid var(--semantic-weather);
 }
 
 .nwi-calendar-weekdays,
@@ -734,7 +764,7 @@
   overflow: hidden;
   color: var(--text-primary);
   font: 600 9px/1 var(--font-family-base);
-  background: color-mix(in srgb, var(--nwi-day-color) 32%, transparent);
+  background: color-mix(in srgb, var(--nwi-day-color) 56%, transparent);
   border: 1px solid rgba(255, 253, 248, 0.5);
   border-radius: 2px;
   cursor: pointer;
@@ -746,10 +776,10 @@
 }
 
 .nwi-calendar-day.has-l5 {
-  border-color: #315d49;
+  border-color: var(--semantic-weather);
   box-shadow:
     inset 0 0 0 1px rgba(255, 253, 248, 0.92),
-    inset 0 0 0 3px #315d49;
+    inset 0 0 0 3px var(--semantic-weather);
 }
 
 .nwi-calendar-day:hover,
@@ -920,6 +950,112 @@
   height: 100%;
 }
 
+.province-nectar-mini-map {
+  position: absolute;
+  z-index: 11;
+  top: 52px;
+  left: 12px;
+  box-sizing: border-box;
+  width: 246px;
+  max-width: calc(100% - 24px);
+  padding: 8px;
+  color: var(--text-primary);
+  background: rgba(251, 250, 247, 0.92);
+  border: 1px solid rgba(164, 128, 83, 0.26);
+  border-radius: 7px;
+  box-shadow: 0 10px 26px rgba(49, 37, 23, 0.1);
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+}
+
+.province-nectar-mini-map[hidden] {
+  display: none;
+}
+
+.province-nectar-mini-map-header,
+.province-nectar-mini-map-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-width: 0;
+}
+
+.province-nectar-mini-map-header {
+  margin-bottom: 4px;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.province-nectar-mini-map-header span {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.province-nectar-mini-map-header strong {
+  color: var(--semantic-route);
+  font-size: 11px;
+}
+
+.province-nectar-mini-map-svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 224 / 160;
+}
+
+.province-nectar-map-bg {
+  fill: rgba(255, 253, 248, 0.76);
+}
+
+.province-nectar-boundary {
+  fill: rgba(214, 178, 116, 0.18);
+  stroke: rgba(131, 103, 69, 0.62);
+  stroke-width: 0.9;
+  vector-effect: non-scaling-stroke;
+}
+
+.province-nectar-boundary.is-hole {
+  fill: rgba(251, 250, 247, 0.92);
+  stroke-width: 0.45;
+}
+
+.province-nectar-marker-halo {
+  fill: rgba(255, 255, 255, 0.86);
+  stroke: rgba(93, 73, 48, 0.38);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+.province-nectar-placeholder-dot {
+  fill: #d88c52;
+}
+
+.province-nectar-placeholder-sprout {
+  fill: none;
+  stroke: #6f8b68;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.province-nectar-mini-map-meta {
+  margin-top: 3px;
+  color: var(--text-secondary);
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.province-nectar-mini-map-meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.province-nectar-mini-map-meta span:last-child {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+}
+
 .rhythm-layer-flowering {
   opacity: 1;
   z-index: 3;
@@ -975,6 +1111,15 @@
 
 .combined-route-highlight-image.is-active {
   opacity: 0.88;
+}
+
+.combined-route-base-dim-cell.is-filtered-out,
+.combined-route-highlight-image.is-filtered-out,
+.combined-inline-svg .combined-cell.is-filtered-out,
+.combined-month-label-path.is-filtered-out,
+.combined-route-end-label-path.is-filtered-out {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .combined-month-label-path,
@@ -1777,12 +1922,12 @@
 }
 
 .overlay-l2 {
-  stroke: #b97043;
+  stroke: #33EBB3;
   stroke-width: 4.5;
 }
 
 .overlay-stay-endpoint {
-  fill: #b97043;
+  fill: #33EBB3;
   stroke: rgba(251, 250, 246, 0.96);
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
@@ -2012,7 +2157,7 @@
 
 .key-l2 {
   height: 4px;
-  background: #b97043;
+  background: #33EBB3;
   border-radius: 3px;
 }
 
@@ -2037,7 +2182,7 @@
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #b96c54, #c89a5b 45%, #4f9b73);
+  background: linear-gradient(135deg, #F7C4B7, #96E6CE);
 }
 
 .key-highlight {
