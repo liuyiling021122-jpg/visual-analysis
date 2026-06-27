@@ -19,7 +19,7 @@ const mimeTypes = {
 
 function resolvePath(urlPath) {
   const cleanPath = decodeURIComponent(urlPath.split('?')[0]);
-  const filePath = cleanPath === '/' ? '/index.html' : cleanPath;
+  const filePath = cleanPath.endsWith('/') ? `${cleanPath}index.html` : cleanPath;
   const normalized = normalize(filePath).replace(/^(\.\.[/\\])+/, '');
   return join(root, normalized);
 }

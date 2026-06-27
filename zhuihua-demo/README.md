@@ -1,6 +1,6 @@
 # 追花为生 demo
 
-这是“追花为生：中国流动养蜂人的迁徙、授粉与生计风险可视分析系统”的可独立运行 demo 文件夹。上传到 GitHub 时，请上传整个 `追花为生demo` 文件夹中的内容，而不是只上传单个 `index.html`。
+这是“追花为生：中国流动养蜂人的迁徙、授粉与生计风险可视分析系统”的可独立运行 demo 文件夹。仓库中的最终展示版本统一放在 `zhuihua-demo/`。如果单独部署这个 demo，请上传整个 `zhuihua-demo` 文件夹中的内容，而不是只上传单个 `index.html`。
 
 ## 环境依赖
 
@@ -38,7 +38,7 @@ $env:PORT=8080; node server.mjs
 
 ## GitHub Pages
 
-这个 demo 使用相对路径引用资源，适合放在 GitHub Pages 这类静态托管环境中运行。部署时需要保留以下目录结构：
+这个 demo 使用相对路径引用资源，适合放在 GitHub Pages 这类静态托管环境中运行。当前仓库根目录的 `index.html` 会自动跳转到 `zhuihua-demo/`。如果单独部署本文件夹，需要保留以下目录结构：
 
 ```text
 index.html

@@ -1,6 +1,6 @@
 # 《追花为生》demo index 页面全内容概览说明
 
-生成对象：追花为生demo/index.html  
+生成对象：zhuihua-demo/index.html
 页面标题：花期节律主视图 | 追花为生  
 系统全称：中国流动养蜂人的迁徙、授粉与生计风险可视分析系统  
 说明范围：以当前 index.html 实际加载的页面为准，即 index.html + js/flowering-rhythm.js + 动态注入的 route-map-panel、livelihood-risk-panel、tooltip-layer 组件，以及它们读取的数据和计算逻辑。
